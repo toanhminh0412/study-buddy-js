@@ -1,0 +1,2 @@
+For development/ production (authentication related):
+https://stackoverflow.com/questions/46590155/firestore-permission-denied-missing-or-insufficient-permissions
