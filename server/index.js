@@ -44,6 +44,9 @@ app.get('/api/profiles', async (req, res) => {
     
 })
 
+// Get a specific user profile
+// app.get('/api/profiles/')
+
 // Post an user profile to firestore
 app.post('/api/profiles', async (req, res) => {
     // res.status(200).send('Profile posted')
