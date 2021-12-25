@@ -71,7 +71,6 @@ export default function UserProfile() {
     }
     
     let submitUserProfile = e => {
-        e.preventDefault();
         let userProfile = {
             "name": name,
             "age": age,
