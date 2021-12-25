@@ -2,10 +2,18 @@
 /* Setting up express js */
 const path = require('path');
 const express = require("express");
+const cors = require('cors');
 
 const PORT = process.env.PORT || 3001;
 
 const app = express();
+
+// Allow CORS for the client
+app.use(
+    cors({
+        origin: "*"
+    })
+)
 
 // Convert all object requested to json
 app.use(express.json())
@@ -39,7 +47,7 @@ app.get('/api/profiles', async (req, res) => {
         })
         res.status(200).send(profiles);
     } catch (error) {
-        res.status(400).send('Bad request. Please try again.')
+        res.status(400).send({"message": "Bad request. Please try again."})
     }
     
 })
@@ -67,7 +75,7 @@ app.post('/api/profiles', async (req, res) => {
     if (req.body.subjects) {
         subjects = req.body.subjects;
     } else {
-        res.status(400).send('Bad request, missing subjects');
+        res.status(400).send({'message': 'Bad request, missing subjects'});
         return;
     }
 
@@ -75,7 +83,7 @@ app.post('/api/profiles', async (req, res) => {
     if (req.body.studyingStyle) {
         studyingStyle = req.body.studyingStyle;
     } else {
-        res.status(400).send('Bad request, missing studying style');
+        res.status(400).send({'message': 'Bad request, missing studying style'});
         return;
     }
 
@@ -83,7 +91,7 @@ app.post('/api/profiles', async (req, res) => {
     if (req.body.description) {
         description = req.body.description;
     } else {
-        res.status(400).send('Bad request, missing description');
+        res.status(400).send({'message': 'Bad request, missing description'});
         return;
     }
 
@@ -91,7 +99,7 @@ app.post('/api/profiles', async (req, res) => {
     if (req.body.status) {
         status = req.body.status;
     } else {
-        res.status(400).send('Bad request, missing status');
+        res.status(400).send({'message': 'Bad request, missing status'});
         return;
     }
 
@@ -120,9 +128,9 @@ app.post('/api/profiles', async (req, res) => {
     // Add a new user profile to the database
     try {
         await firestore.setDoc(firestore.doc(db, "profiles", profile_id), add_profile)
-        res.status(201).send('Profile posted');
+        res.status(201).send({"message": 'Profile posted'});
     } catch (error) {
-        res.status(400).send('Bad request. Please try again');
+        res.status(400).send({"message": 'Bad request. Please try again'});
     }
     
 
