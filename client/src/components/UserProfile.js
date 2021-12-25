@@ -1,7 +1,7 @@
 // import modules
 import React, {useState} from "react";
 import '../css/UserProfile.css';
-
+import { Link } from "react-router-dom";
 
 
 export default function UserProfile() {
@@ -84,7 +84,9 @@ export default function UserProfile() {
             "availability": availability,
             "location": location
         }
-        console.log(userProfile);
+        // console.log(userProfile);
+        e.preventDefault();
+        window.location.href = "/";
         fetch('/api/profiles', {
             method: 'POST',
             headers: {
