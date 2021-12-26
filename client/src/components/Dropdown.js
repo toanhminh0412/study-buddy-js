@@ -11,7 +11,7 @@ export default function Dropdown() {
         .then(response => response.json())
         .then(data => {
             console.log(data);
-            window.location.href = '/login'
+            window.location.href = '/log-in'
         })
         .catch((error) => {
             console.log(error);
