@@ -9,6 +9,7 @@ import HomePage from "./components/HomePage";
 import UserProfile from './components/UserProfile';
 import Login from "./components/Login";
 import Signup from "./components/Signup";
+import Message from "./components/Message";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route element={<Signup/>} path="/signup"></Route>
         <Route element={<Login/>} path="/login"></Route>
         <Route element={<UserProfile/>} path="/user-profile"></Route>
+        <Route element={<Message/>} path="/message"></Route>
       </Routes>
     </Router>
   );
