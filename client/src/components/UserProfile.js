@@ -1,11 +1,10 @@
 // import modules
 import React, {useState} from "react";
 import '../css/UserProfile.css';
-import { Link } from "react-router-dom";
+import Login from "./Login";
 
 
 export default function UserProfile() {
-    let user_profile = true
     let [name, setName] = useState("");
     let [age, setAge] = useState(-1);
     let [studyYear, setStudyYear] = useState(-1)
@@ -99,11 +98,13 @@ export default function UserProfile() {
             console.log('Success:', data);
         })
         .catch((error) => {
-            console.error('Error:', error);
+            console.log('Error:', error);
         })
     }
+
+    let userId = window.localStorage.getItem('userId');
     
-    if (user_profile) {
+    if (userId !== "") {
         return (
             <div>
                 <h1 className='font-medium text-5xl mt-8 sm:ml-4 lg:ml-12'>Build User Profile</h1>
@@ -148,7 +149,7 @@ export default function UserProfile() {
         )
     } else {
         return (
-            <h1>nothing is here</h1>
+            <Login/>
         )
     }
     
