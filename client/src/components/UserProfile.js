@@ -86,7 +86,6 @@ export default function UserProfile() {
         }
         // console.log(userProfile);
         e.preventDefault();
-        window.location.href = "/user-profile";
         fetch('/api/profiles', {
             method: 'POST',
             headers: {
@@ -108,6 +107,7 @@ export default function UserProfile() {
             window.localStorage.setItem('status', status)
             window.localStorage.setItem('availability', availability)
             window.localStorage.setItem('location', location)
+            window.location.href = "/user-profile";
         })
         .catch((error) => {
             console.log('Error:', error);

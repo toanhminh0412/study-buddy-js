@@ -4,7 +4,7 @@ const path = require('path');
 const express = require("express");
 const cors = require('cors');
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 5000;
 
 const app = express();
 
@@ -107,11 +107,10 @@ app.get('/api/profiles', async (req, res) => {
 // Get a specific user profile
 app.get('/api/profiles/:id', async function(req, res) {
     userId = req.params.id;
-    console.log('UserId:', userId);
     const userProfileRef = firestore.doc(db, "profiles", userId);
     const userProfileSnap = await firestore.getDoc(userProfileRef)
     if(userProfileSnap.exists()) {
-        console.log('userProfile:', userProfileSnap.data())
+        console.log('Success getting user profile')
         res.status(200).send({"userProfile": userProfileSnap.data()})
     } else {
         console.log("Error: Could not find user profile")

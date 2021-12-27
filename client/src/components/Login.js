@@ -44,7 +44,10 @@ export default function Login() {
             if (userId) {
                 window.localStorage.setItem('userId', userId)
                 fetch(`/api/profiles/${userId}`)
-                .then(response => response.json())
+                .then(response => {
+                    console.log(response);
+                    return response.json();
+                })
                 .then(data => {
                     if (data.userProfile) {
                         let userProfile = data.userProfile
@@ -60,11 +63,12 @@ export default function Login() {
                         window.localStorage.setItem('availability', userProfile.availability)
                         window.localStorage.setItem('location', userProfile.location)
                     }
+                    window.location.href = '/'
                 })
                 .catch((error) => {
                     console.log('Error:', error);
                 })
-                window.location.href = '/'
+                
             }
         })
         .catch((error) => {
