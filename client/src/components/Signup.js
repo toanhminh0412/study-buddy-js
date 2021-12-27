@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import { Link } from "react-router-dom";
 
 export default function Signup() {
     const [email, setEmail] = useState("")
@@ -67,7 +68,7 @@ export default function Signup() {
                 <input className='border border-black w-72 sm:w-96 h-8 lg:h-12 rounded-sm text-xl pl-6 mt-8 mx-auto' type='password' name='password2' placeholder='Retype Password' onChange={updatePassword2}></input>
                 <input className='w-24 h-8 lg:w-32 lg:h-12 bg-red-500 text-sm lg:text-xl hover:bg-red-700 rounded-sm text-white mt-6 mb-4 mx-auto' type="submit" value="Register"></input>
             </form>
-            <p>Already have an account? Log in <span onClick={() => {window.location.href = "/login"}} className='cursor-pointer'>Here</span></p>
+            <p>Already have an account? Log in <span><Link to='/login' className='cursor-pointer'>Here</Link></span></p>
         </div>
     )
 }
