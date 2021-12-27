@@ -2,9 +2,12 @@
 import React, {useState} from "react";
 import '../css/UserProfile.css';
 import Login from "./Login";
+import {useNavigate} from 'react-router-dom';
 
 
 export default function UserProfile() {
+    const navigate = useNavigate();
+
     let [name, setName] = useState("");
     let [age, setAge] = useState(-1);
     let [studyYear, setStudyYear] = useState(-1)
@@ -107,7 +110,7 @@ export default function UserProfile() {
             window.localStorage.setItem('status', status)
             window.localStorage.setItem('availability', availability)
             window.localStorage.setItem('location', location)
-            window.location.href = "/user-profile";
+            navigate('/user-profile')
         })
         .catch((error) => {
             console.log('Error:', error);
