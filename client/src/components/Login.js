@@ -43,6 +43,27 @@ export default function Login() {
             let userId = data.userId;
             if (userId) {
                 window.localStorage.setItem('userId', userId)
+                fetch(`/api/profiles/${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.userProfile) {
+                        let userProfile = data.userProfile
+                        window.localStorage.setItem('name', userProfile.name)
+                        window.localStorage.setItem('age', userProfile.age)
+                        window.localStorage.setItem('studyYear', userProfile.studyYear)
+                        window.localStorage.setItem('profilePic', userProfile.profilePic)
+                        window.localStorage.setItem('department', userProfile.department)
+                        window.localStorage.setItem('subjects', userProfile.subjects)
+                        window.localStorage.setItem('studyingStyle', userProfile.studyingStyle)
+                        window.localStorage.setItem('description', userProfile.description)
+                        window.localStorage.setItem('status', userProfile.status)
+                        window.localStorage.setItem('availability', userProfile.availability)
+                        window.localStorage.setItem('location', userProfile.location)
+                    }
+                })
+                .catch((error) => {
+                    console.log('Error:', error);
+                })
                 window.location.href = '/'
             }
         })

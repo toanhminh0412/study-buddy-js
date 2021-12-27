@@ -71,6 +71,7 @@ export default function UserProfile() {
     
     let submitUserProfile = e => {
         let userProfile = {
+            "userId": window.localStorage.getItem('userId'),
             "name": name,
             "age": age,
             "studyYear": studyYear,
@@ -85,7 +86,7 @@ export default function UserProfile() {
         }
         // console.log(userProfile);
         e.preventDefault();
-        window.location.href = "/";
+        window.location.href = "/user-profile";
         fetch('/api/profiles', {
             method: 'POST',
             headers: {
@@ -96,6 +97,17 @@ export default function UserProfile() {
         .then(response => response.json())
         .then(data => {
             console.log('Success:', data);
+            window.localStorage.setItem('name', name)
+            window.localStorage.setItem('age', age)
+            window.localStorage.setItem('studyYear', studyYear)
+            window.localStorage.setItem('profilePic', profilePic)
+            window.localStorage.setItem('department', department)
+            window.localStorage.setItem('subjects', subjects)
+            window.localStorage.setItem('studyingStyle', studyingStyle)
+            window.localStorage.setItem('description', description)
+            window.localStorage.setItem('status', status)
+            window.localStorage.setItem('availability', availability)
+            window.localStorage.setItem('location', location)
         })
         .catch((error) => {
             console.log('Error:', error);
@@ -103,8 +115,15 @@ export default function UserProfile() {
     }
 
     let userId = window.localStorage.getItem('userId');
+    let userName = window.localStorage.getItem('name')
     
     if (userId !== "") {
+        if(userName){
+            console.log(userName);
+            return (
+                <h1>{userName}</h1>
+            )
+        } else {
         return (
             <div>
                 <h1 className='font-medium text-5xl mt-8 sm:ml-4 lg:ml-12'>Build User Profile</h1>
@@ -147,6 +166,7 @@ export default function UserProfile() {
                 </form>
             </div>
         )
+        }
     } else {
         return (
             <Login/>

@@ -44,11 +44,11 @@ app.post('/api/signup/users', async(req, res) => {
     const auth = fireauth.getAuth();
     email = req.body.email;
     password = req.body.password;
-    console.log(email, password);
+    // console.log(email, password);
     fireauth.createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
         // Signed in
-        console.log(userCredential)
+        // console.log(userCredential)
         const uid = userCredential.user.uid;
         res.status(200).send({"userId": uid})
     })
@@ -67,7 +67,7 @@ app.post('/api/login/users', async(req, res) => {
     password = req.body.password;
     fireauth.signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
-        console.log(userCredential)
+        // console.log(userCredential)
         // Signed in
         const uid = userCredential.user.uid;
         res.status(200).send({"userId": uid})
@@ -105,7 +105,19 @@ app.get('/api/profiles', async (req, res) => {
 })
 
 // Get a specific user profile
-// app.get('/api/profiles/')
+app.get('/api/profiles/:id', async function(req, res) {
+    userId = req.params.id;
+    console.log('UserId:', userId);
+    const userProfileRef = firestore.doc(db, "profiles", userId);
+    const userProfileSnap = await firestore.getDoc(userProfileRef)
+    if(userProfileSnap.exists()) {
+        console.log('userProfile:', userProfileSnap.data())
+        res.status(200).send({"userProfile": userProfileSnap.data()})
+    } else {
+        console.log("Error: Could not find user profile")
+        res.status(404).send({"message": "Didn't find a profile related to this user"})
+    }
+})
 
 // Post an user profile to firestore
 app.post('/api/profiles', async (req, res) => {
@@ -158,11 +170,15 @@ app.post('/api/profiles', async (req, res) => {
     let availability = req.body.availability ? req.body.availability : "";
     let location = req.body.location ? req.body.location : "";
 
+    /*
     // Generate a random id 
     let d = new Date();
     let d_string = String(d.getTime());
     let profile_id = name.toLocaleLowerCase().replace(/\s/g, '') + d_string;
-    
+    */
+
+    let profile_id = req.body.userId;
+
     add_profile = {
         "name": name,
         "age": age,

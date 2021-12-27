@@ -6,6 +6,17 @@ export default function Dropdown() {
     let logOut = () => {
 
         window.localStorage.setItem('userId', "")
+        window.localStorage.setItem('name', "")
+        window.localStorage.setItem('age', "")
+        window.localStorage.setItem('studyYear', "")
+        window.localStorage.setItem('profilePic', "")
+        window.localStorage.setItem('department', "")
+        window.localStorage.setItem('subjects', "")
+        window.localStorage.setItem('studyingStyle', "")
+        window.localStorage.setItem('description', "")
+        window.localStorage.setItem('status', "")
+        window.localStorage.setItem('availability', "")
+        window.localStorage.setItem('location', "")
 
         fetch('/api/logout/users')
         .then(response => response.json())

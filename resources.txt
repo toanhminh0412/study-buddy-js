@@ -1,2 +1,6 @@
 For development/ production (authentication related):
 https://stackoverflow.com/questions/46590155/firestore-permission-denied-missing-or-insufficient-permissions
+
+Todo list:
+- UserProfile page: if there is an user profile, show it on /user-profile, otherwise shows the form.
+- handling image upload
