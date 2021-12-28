@@ -2,6 +2,8 @@
 import React, {useState} from "react";
 import '../css/UserProfile.css';
 import Login from "./Login";
+import UserProfilePic from "./UserProfilePic";
+import UserProfileDetails from "./UserProfileDetails";
 import {useNavigate} from 'react-router-dom';
 
 
@@ -11,7 +13,6 @@ export default function UserProfile() {
     let [name, setName] = useState("");
     let [age, setAge] = useState(-1);
     let [studyYear, setStudyYear] = useState(-1)
-    let [profilePic, setProfilePic] = useState("")
     let [department, setDepartment] = useState("")
     let [subjects, setSubjects] = useState(Array(2))
     let [studyingStyle, setStudyingStyle] = useState(["Quiet/Individual work"])
@@ -32,11 +33,6 @@ export default function UserProfile() {
 
     let changeStudyYear = e => {
         setStudyYear(e.target.value)
-    }
-
-    let changeProfilePic = e => {
-        setProfilePic(e.target.value)
-        // console.log(e.target.value)
     }
 
     let changeDepartment = e => {
@@ -77,8 +73,8 @@ export default function UserProfile() {
             "userId": window.localStorage.getItem('userId'),
             "name": name,
             "age": age,
+            "profilePic": window.localStorage.getItem('profilePic'),
             "studyYear": studyYear,
-            "profilePic": profilePic,
             "department": department,
             "subjects": subjects,
             "studyingStyle": studyingStyle,
@@ -102,7 +98,6 @@ export default function UserProfile() {
             window.localStorage.setItem('name', name)
             window.localStorage.setItem('age', age)
             window.localStorage.setItem('studyYear', studyYear)
-            window.localStorage.setItem('profilePic', profilePic)
             window.localStorage.setItem('department', department)
             window.localStorage.setItem('subjects', subjects)
             window.localStorage.setItem('studyingStyle', studyingStyle)
@@ -122,9 +117,14 @@ export default function UserProfile() {
     
     if (userId !== "") {
         if(userName){
-            console.log(userName);
             return (
-                <h1>{userName}</h1>
+                <UserProfileDetails/>
+            )
+        } else {
+        let profilePic = window.localStorage.getItem('profilePic');
+        if (!profilePic) {
+            return (
+                <UserProfilePic/>
             )
         } else {
         return (
@@ -137,9 +137,6 @@ export default function UserProfile() {
                     <input className='ml-8 lg:ml-20 border border-black w-72 sm:w-96 h-8 lg:h-12 rounded-sm text-xl pl-6' type="number" name="age" onChange={changeAge}/>
                     <label className='text-2xl font-light ml-8 lg:ml-20 mt-2' htmlFor='studyYear'>Study year</label>
                     <input className='ml-8 lg:ml-20 border border-black w-72 sm:w-96 h-8 lg:h-12 rounded-sm text-xl pl-6' type="number" name="studyYear" onChange={changeStudyYear}/>
-                    <label className='text-2xl font-light ml-8 lg:ml-20 mt-2' htmlFor='profilePic'>Profile picture</label>
-                    <input className='ml-8 lg:ml-20' type="file" name="profilePic"/>
-                    <input className='ml-8 lg:ml-20 border border-black w-72 sm:w-96 h-8 lg:h-12 rounded-sm text-xl pl-6' type='text' onChange={changeProfilePic}></input>
                     <label className='text-2xl font-light ml-8 lg:ml-20 mt-2' htmlFor='department'>Department</label>
                     <input className='ml-8 lg:ml-20 border border-black w-72 sm:w-96 h-8 lg:h-12 rounded-sm text-xl pl-6' type="text" name="department" onChange={changeDepartment}/>
                     <label className='text-2xl font-light ml-8 lg:ml-20 mt-2' htmlFor='subject1'>Subject 1</label>
@@ -170,6 +167,7 @@ export default function UserProfile() {
             </div>
         )
         }
+    }
     } else {
         return (
             <Login/>
