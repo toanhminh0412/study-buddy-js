@@ -3,19 +3,6 @@
 const path = require('path');
 const express = require("express");
 const cors = require('cors');
-/*
-const multer = require('multer')
-const storage = multer.diskStorage({
-    destination: function(req, file, cb) {
-        cb(null, 'client/public/img')
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + "-" + file.originalname)
-    }
-})
-
-const upload = multer({storage:storage})
-*/
 const PORT = process.env.PORT || 5000;
 
 const app = express();
@@ -37,8 +24,6 @@ app.use(express.static(path.resolve(__dirname, '../client/build')));
 const firebase =  require("firebase/app");
 const firestore = require("firebase/firestore");
 const fireauth = require("firebase/auth")
-const firestorage = require("firebase/storage");
-const { ref } = require('firebase/storage');
 
 // Your web app's Firebase configuration
 const firebaseApp = firebase.initializeApp({
@@ -132,23 +117,6 @@ app.get('/api/profiles/:id', async function(req, res) {
     }
 })
 
-/*
-// Post an user profile picture to cloud storage
-app.post('/api/profilepics', upload.single('profilePic'), async (req, res) => {
-    try {
-        console.log(req.file);
-        file = req.file;
-        res.status(200).send(req.file)
-    } catch (error) {
-        res.status(400).send({"message": "Error"})
-    }
-    
-    const storage = firestorage.getStorage();
-    
-})
-*/
-
-
 // Post an user profile to firestore
 app.post('/api/profiles', async (req, res) => {
     // res.status(200).send('Profile posted')
@@ -199,13 +167,6 @@ app.post('/api/profiles', async (req, res) => {
 
     let availability = req.body.availability ? req.body.availability : "";
     let location = req.body.location ? req.body.location : "";
-
-    /*
-    // Generate a random id 
-    let d = new Date();
-    let d_string = String(d.getTime());
-    let profile_id = name.toLocaleLowerCase().replace(/\s/g, '') + d_string;
-    */
 
     let profile_id = req.body.userId;
 
