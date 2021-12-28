@@ -3,6 +3,7 @@
 const path = require('path');
 const express = require("express");
 const cors = require('cors');
+/*
 const multer = require('multer')
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -12,8 +13,9 @@ const storage = multer.diskStorage({
         cb(null, Date.now() + "-" + file.originalname)
     }
 })
-const upload = multer({storage:storage})
 
+const upload = multer({storage:storage})
+*/
 const PORT = process.env.PORT || 5000;
 
 const app = express();
@@ -130,6 +132,7 @@ app.get('/api/profiles/:id', async function(req, res) {
     }
 })
 
+/*
 // Post an user profile picture to cloud storage
 app.post('/api/profilepics', upload.single('profilePic'), async (req, res) => {
     try {
@@ -139,10 +142,12 @@ app.post('/api/profilepics', upload.single('profilePic'), async (req, res) => {
     } catch (error) {
         res.status(400).send({"message": "Error"})
     }
-    /*
+    
     const storage = firestorage.getStorage();
-    */
+    
 })
+*/
+
 
 // Post an user profile to firestore
 app.post('/api/profiles', async (req, res) => {
