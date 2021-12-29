@@ -46,18 +46,27 @@ export default function Login() {
                 window.localStorage.setItem('userId', userId)
                 fetch(`/api/profiles/${userId}`)
                 .then(response => {
-                    console.log(response);
+                    // console.log(response);
                     return response.json();
                 })
                 .then(data => {
                     if (data.userProfile) {
                         let userProfile = data.userProfile
+                        console.log(userProfile);
                         window.localStorage.setItem('name', userProfile.name)
                         window.localStorage.setItem('age', userProfile.age)
                         window.localStorage.setItem('studyYear', userProfile.studyYear)
                         window.localStorage.setItem('profilePic', userProfile.profilePic)
                         window.localStorage.setItem('department', userProfile.department)
-                        window.localStorage.setItem('subjects', userProfile.subjects)
+                        let subjectsString = ""
+                        for (let i=0; i<userProfile.subjects.length; i++) {
+                            if (i < userProfile.subjects.length - 1) {
+                                subjectsString = subjectsString + userProfile.subjects[i] + ', ';
+                            } else {
+                                subjectsString = subjectsString + userProfile.subjects[i]
+                            }
+                        }
+                        window.localStorage.setItem('subjects', subjectsString);
                         window.localStorage.setItem('studyingStyle', userProfile.studyingStyle)
                         window.localStorage.setItem('description', userProfile.description)
                         window.localStorage.setItem('status', userProfile.status)
