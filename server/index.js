@@ -23,7 +23,8 @@ app.use(express.static(path.resolve(__dirname, '../client/build')));
 /* Setting up firebase */
 const firebase =  require("firebase/app");
 const firestore = require("firebase/firestore");
-const fireauth = require("firebase/auth")
+const fireauth = require("firebase/auth");
+const { ActionCodeOperation } = require('firebase/auth');
 
 // Your web app's Firebase configuration
 const firebaseApp = firebase.initializeApp({
@@ -189,13 +190,47 @@ app.post('/api/profiles', async (req, res) => {
     // Add a new user profile to the database
     try {
         await firestore.setDoc(firestore.doc(db, "profiles", profile_id), add_profile)
-        
+        await firestore.setDoc(firestore.doc(db, "likes", profile_id), {'liked_people': []})
         res.status(201).send({"message": 'Profile posted'});
     } catch (error) {
         res.status(400).send({"message": 'Bad request. Please try again'});
     }
     
 
+})
+
+// get all people that a person has liked
+app.get('/api/like/:id', async(req, res) => {
+    userId = req.params.id;
+    const userLikeRef = firestore.doc(db, 'likes', userId);
+    const userLikeSnap = await firestore.getDoc(userLikeRef);
+    if(userLikeSnap.exists()) {
+        console.log('User like database found')
+        let likes = userLikeSnap.data().liked_people;
+        res.status(200).send({'liked_people': likes})
+    } else {
+        res.status(200).send({'liked_people': []})
+    }
+})
+
+// add a new like for a person
+app.post('/api/like', async (req, res) => {
+    let senderId = req.body["senderId"];
+    let receiverId = req.body["receiverId"];
+    const senderRef = firestore.doc(db, 'likes', senderId);
+    const senderSnap = await firestore.getDoc(senderRef);
+    let senderLikes = [];
+    if(senderSnap.exists()) {
+        console.log('Like database found')
+        senderLikes = senderSnap.data().liked_people;
+    }
+    senderLikes.push(receiverId);
+    try {
+        await firestore.setDoc(firestore.doc(db, 'likes', senderId), {'liked_people': senderLikes})
+        res.status(200).send({"message": "Add a liked person"})
+    } catch (error) {
+        res.status(400).send({"message": "Fail to like the person. Try again"})
+    }
 })
 
 app.listen(PORT, () => {
