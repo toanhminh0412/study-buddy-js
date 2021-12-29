@@ -171,6 +171,7 @@ app.post('/api/profiles', async (req, res) => {
     let profile_id = req.body.userId;
 
     add_profile = {
+        "userId": profile_id,
         "name": name,
         "age": age,
         "studyYear": studyYear,

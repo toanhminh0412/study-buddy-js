@@ -117,8 +117,31 @@ export default function UserProfile() {
     
     if (userId !== "") {
         if(userName){
+            const userProfilePic = window.localStorage.getItem('profilePic');
+            const userAge = window.localStorage.getItem('age');
+            const userStudyYear = window.localStorage.getItem('studyYear');
+            const userDepartment = window.localStorage.getItem('department')
+            const userStatus = window.localStorage.getItem('status');
+            const userSubjects = window.localStorage.getItem('subjects')
+            const userStudyingStyle = window.localStorage.getItem('studyingStyle')
+            const userDescription = window.localStorage.getItem('description')
+            const userAvailability = window.localStorage.getItem('availability')
+            const userLocation = window.localStorage.getItem('location')
+            const user = {
+                name: userName,
+                age: userAge,
+                studyYear: userStudyYear,
+                department: userDepartment,
+                profilePic: userProfilePic,
+                status: userStatus,
+                subjects: userSubjects,
+                studyingStyle: userStudyingStyle,
+                description: userDescription,
+                availability: userAvailability,
+                location: userLocation
+            }
             return (
-                <UserProfileDetails/>
+                <UserProfileDetails user={user} owner={true}/>
             )
         } else {
         let profilePic = window.localStorage.getItem('profilePic');
