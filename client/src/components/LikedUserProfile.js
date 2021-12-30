@@ -33,18 +33,18 @@ export default function LikedUserProfile() {
                     <h1 className='text-2xl font-medium mt-1 ml-1 sm:text-4xl lg:text-6xl'>{user.name}<span className='text-xl ml-2 sm:text-2xl lg:text-3xl'>({user.age})</span></h1>
                     <p className='text-lg ml-1 italic lg:text-2xl'>{user.status}</p>
                 </div>
-                <div className='mt-2 w-80 sm:mt-8 sm:ml-4 border border-orange-300 rounded-md shadow-sm sm:shadow-md shadow-orange-300 md:ml-10 lg:ml-24 lg:w-4/5 lg:mt-16 xl:ml-36 xl:w-11/12'>
+                <div className='mt-2 w-80 sm:mt-8 sm:ml-4 border border-orange-300 rounded-md shadow-sm sm:shadow-md shadow-orange-300 md:ml-10 lg:ml-24 lg:w-4/5 lg:mt-16 xl:ml-36'>
                     <p className='text-xl ml-1 sm:ml-2 sm:mt-2 sm:mr-2 lg:text-2xl'>Department: {user.department}</p>
                     <p className='text-xl ml-1 sm:ml-2 sm:mt-2 sm:mr-2'>Year: {user.studyYear}</p>
                     <p className='text-xl ml-1 sm:ml-2 sm:mt-2 sm:mb-2 sm:mr-2'>Subjects: {user.subjects}</p>
                 </div>
 
-                <div className='mt-4 w-80 sm:mt-8 sm:ml-4 border border-orange-300 rounded-md shadow-sm sm:shadow-md shadow-orange-300 md:ml-10 lg:ml-24 lg:w-4/5 lg:mt-12 xl:ml-36 xl:w-11/12'>
+                <div className='mt-4 w-80 sm:mt-8 sm:ml-4 border border-orange-300 rounded-md shadow-sm sm:shadow-md shadow-orange-300 md:ml-10 lg:ml-24 lg:w-4/5 lg:mt-12 xl:ml-36'>
                     <p className='text-xl ml-1 sm:ml-2 sm:mt-2 sm:mr-2 lg:text-2xl'>Style: {user.studyingStyle}</p>
                     <p className='text-xl ml-1 sm:ml-2 sm:mt-2 sm:mb-2 sm:mr-2 lg:text-2xl'>Level: {user.description}</p>
                 </div>
 
-                <div className='mt-4 w-80 mb-4 sm:mt-8 sm:ml-4 border border-orange-300 rounded-md shadow-sm sm:shadow-md shadow-orange-300 md:ml-10 lg:ml-24 lg:w-4/5 lg:mt-12 xl:ml-36 xl:w-11/12'>
+                <div className='mt-4 w-80 mb-4 sm:mt-8 sm:ml-4 border border-orange-300 rounded-md shadow-sm sm:shadow-md shadow-orange-300 md:ml-10 lg:ml-24 lg:w-4/5 lg:mt-12 xl:ml-36'>
                     <p className='text-xl ml-1 sm:ml-2 sm:mt-2 sm:mb-2 sm:mr-2 lg:text-2xl'>Location: {user.location}</p>
                     <p className='text-xl ml-1 sm:ml-2 sm:mt-2 sm:mr-2 lg:text-2xl'>Availability: {user.availability}</p>          
                 </div>
