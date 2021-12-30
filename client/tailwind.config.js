@@ -6,6 +6,9 @@ module.exports = {
     extend: {
       inset: {
         '76': '19rem'
+      },
+      spacing: {
+        '11/12': '91.6%',
       }
     },
   },

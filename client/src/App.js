@@ -10,6 +10,9 @@ import UserProfile from './components/UserProfile';
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Message from "./components/Message";
+import Matches from "./components/Matches";
+import Likes from "./components/Likes";
+import LikedUserProfile from "./components/LikedUserProfile";
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
@@ -42,6 +45,9 @@ function App() {
         <Route element={<Login/>} path="/login"></Route>
         <Route element={<UserProfile/>} path="/user-profile"></Route>
         <Route element={<Message/>} path="/message"></Route>
+        <Route element={<Matches/>} path='/matches'></Route>
+        <Route element={<Likes/>} path='/likes' exact></Route>
+        <Route element={<LikedUserProfile />} path='/likes/:userId'></Route>
       </Routes>
     </Router>
   );

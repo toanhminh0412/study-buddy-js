@@ -191,6 +191,7 @@ app.post('/api/profiles', async (req, res) => {
     try {
         await firestore.setDoc(firestore.doc(db, "profiles", profile_id), add_profile)
         await firestore.setDoc(firestore.doc(db, "likes", profile_id), {'liked_people': []})
+        await firestore.setDoc(firestore.doc(db, "matches", profile_id), {'matched_people': []})
         res.status(201).send({"message": 'Profile posted'});
     } catch (error) {
         res.status(400).send({"message": 'Bad request. Please try again'});
@@ -224,12 +225,66 @@ app.post('/api/like', async (req, res) => {
         console.log('Like database found')
         senderLikes = senderSnap.data().liked_people;
     }
-    senderLikes.push(receiverId);
+    if(!senderLikes.includes(receiverId)) {
+        senderLikes.push(receiverId);
+    }   
     try {
         await firestore.setDoc(firestore.doc(db, 'likes', senderId), {'liked_people': senderLikes})
         res.status(200).send({"message": "Add a liked person"})
     } catch (error) {
         res.status(400).send({"message": "Fail to like the person. Try again"})
+    }
+})
+
+// add a new like for a person
+app.post('/api/match', async (req, res) => {
+    let senderId = req.body["senderId"];
+    let receiverId = req.body["receiverId"];
+    
+    // Update sender match database
+    const senderRef = firestore.doc(db, 'matches', senderId);
+    const senderSnap = await firestore.getDoc(senderRef);
+    let senderMatches = [];
+    if(senderSnap.exists()) {
+        console.log('Sender match database found')
+        senderMatches = senderSnap.data().matched_people;
+    }
+    if (!senderMatches.includes(receiverId)) {
+        senderMatches.push(receiverId);
+    }
+
+    // Update receiver match database
+    const receiverRef = firestore.doc(db, 'matches', receiverId);
+    const receiverSnap = await firestore.getDoc(receiverRef);
+    let receiverMatches = [];
+    if(receiverSnap.exists()) {
+        console.log('Receiver match database found')
+        receiverMatches = receiverSnap.data().matched_people;
+    }
+    if (!receiverMatches.includes(senderId)) {
+        receiverMatches.push(senderId);
+    }
+
+    try {
+        await firestore.setDoc(firestore.doc(db, 'matches', senderId), {'matched_people': senderMatches})
+        await firestore.setDoc(firestore.doc(db, 'matches', receiverId), {'matched_people': receiverMatches})
+        res.status(200).send({"message": "Add a matched person"})
+    } catch (error) {
+        res.status(400).send({"message": "Fail to match the person for sender. Try again"})
+    }
+})
+
+// get all people that a person has liked
+app.get('/api/match/:id', async(req, res) => {
+    userId = req.params.id;
+    const userMatchRef = firestore.doc(db, 'matches', userId);
+    const userMatchSnap = await firestore.getDoc(userMatchRef);
+    if(userMatchSnap.exists()) {
+        console.log('User match database found')
+        let matches = userMatchSnap.data().matched_people;
+        res.status(200).send({'matched_people': matches})
+    } else {
+        res.status(200).send({'matched_people': []})
     }
 })
 

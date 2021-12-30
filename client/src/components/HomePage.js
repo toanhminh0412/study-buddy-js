@@ -6,6 +6,7 @@ export default function HomePage() {
     const [userList, setUserList] = useState([])
     const [currentUser, setCurrentUser] = useState(0)
     const [userLikeList, setUserLikeList] = useState([])
+    const [likeTimes, setLikeTimes] = useState(0)
     
     let userId = window.localStorage.getItem('userId');
 
@@ -23,12 +24,36 @@ export default function HomePage() {
         }).then(response => response.json())
         .then(data => {
             console.log(data)
+            fetch(`/api/like/${receiverId}`)
+            .then(response => response.json())
+            .then(receiverData => {
+                let receiverLikes = receiverData.liked_people;
+                if(receiverLikes.includes(senderId)) {
+                    fetch('/api/match', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            "senderId": senderId,
+                            "receiverId": receiverId
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(resData => {
+                        console.log(resData)
+                    })
+                    .catch(resError => {
+                        console.log(resError);
+                    })
+                }
+            })
             setCurrentUser(currentUser+1);
         })
         .catch((error) => {
             console.log(error);
         })
-        
+        setLikeTimes(likeTimes+1)
     }
     
     useEffect(() => {
@@ -42,6 +67,7 @@ export default function HomePage() {
             .then(likeData => {
                 console.log(likeData);
                 setUserLikeList(likeData.liked_people);
+                window.localStorage.setItem('liked_people', JSON.stringify(likeData.liked_people))
             })
             .catch((likeError) => {
                 console.log(likeError);
@@ -49,7 +75,7 @@ export default function HomePage() {
         })
         .catch(error => {
             console.log("Error: ", error);
-    })}, [])
+    })}, [likeTimes])
 
     const user = userList[currentUser]
 
