@@ -7,6 +7,13 @@ export default function LikedUserContainer(props) {
     
     const [user, setUser] = useState({});
 
+    const messageBuilder = (receiverId, receiverPic, receiverName) => {
+        window.localStorage.setItem('receiverId', receiverId);
+        window.localStorage.setItem('receiverPic', receiverPic);
+        window.localStorage.setItem('receiverName', receiverName);
+        navigate('/message')
+    }
+
     useEffect(() => {
         fetch(`/api/profiles/${props.userId}`)
         .then(response => response.json())
@@ -44,7 +51,7 @@ export default function LikedUserContainer(props) {
                         <p className='text-lg md:text-xl md:mt-2'>Subjects: {user.subjects}</p>
                         <p className='text-lg md:text-xl md:mt-2'>Availability: {user.availability}</p>
                         <p className='text-lg md:text-xl md:mt-2'>Located at {user.location}</p>
-                        <div onClick={() => {navigate('/message')}} className="ml-52 mt-2 md:mt-4 bg-cyan-700 hover:bg-cyan-900 rounded-full w-12 h-12 flex flex-col justify-center absolute right-3 bottom-3 lg:right-6 lg:bottom-4">
+                        <div onClick={() => {messageBuilder(props.userId, user.profilePic, user.name)}} className="ml-52 mt-2 md:mt-4 bg-cyan-700 hover:bg-cyan-900 rounded-full w-12 h-12 flex flex-col justify-center absolute right-3 bottom-3 lg:right-6 lg:bottom-4">
                             <RiMessage2Line className="text-3xl text-cyan-200 ml-2"/>
                         </div>
                     </div>

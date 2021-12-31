@@ -91,7 +91,7 @@ app.get('/api/logout/users', async(req, res) => {
 // Get all user profiles from firestore
 app.get('/api/profiles', async (req, res) => {
     // Get data from cloud firestore
-    profiles = []
+    let profiles = []
     try {
         const profilesSnapshot = await firestore.getDocs(firestore.collection(db, 'profiles'));
         profilesSnapshot.forEach((profile) => {
@@ -285,6 +285,62 @@ app.get('/api/match/:id', async(req, res) => {
         res.status(200).send({'matched_people': matches})
     } else {
         res.status(200).send({'matched_people': []})
+    }
+})
+
+// Get all messages from the database
+app.get('/api/message', async(req, res) => {
+    let messages = []
+    try {
+        const messagesSnapshot = await firestore.getDocs(firestore.collection(db, 'chat server'));
+        messagesSnapshot.forEach((message) => {
+            messages.push(message.data());
+        })
+        res.status(200).send({"messages": messages})
+    } catch (error) {
+        res.status(404).send({"message": "No messages were found"})
+    }
+})
+
+// add user messages
+app.post('/api/message', async(req, res) => {
+    
+
+    const d = new Date();
+    let msString = String(d.valueOf());
+    let messageId = "msg" + msString;
+
+    const messageObject = {
+        "messageId": messageId,
+        "senderId": req.body.senderId,
+        "senderPic": req.body.senderPic,
+        "senderName": req.body.senderName,
+        "receiverId": req.body.receiverId,
+        "receiverPic": req.body.receiverPic,
+        "receiverName": req.body.receiverName,
+        "message": req.body.message,
+        "sendTime": Date.now()
+    }
+
+    console.log(messageObject)
+
+    try {
+        await firestore.setDoc(firestore.doc(db, "chat server", messageId), messageObject);
+        // res.status(201).send({"message": "Message sent"});
+    } catch (error) {
+        res.status(400).send({"message": "Fail to send message"});
+        return;
+    }
+
+    let messages = []
+    try {
+        const messagesSnapshot = await firestore.getDocs(firestore.collection(db, 'chat server'));
+        messagesSnapshot.forEach((message) => {
+            messages.push(message.data());
+        })
+        res.status(200).send({"messages": messages})
+    } catch (error) {
+        res.status(404).send({"message": "No messages were found"})
     }
 })
 

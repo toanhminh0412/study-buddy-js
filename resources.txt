@@ -1,6 +1,8 @@
 For development/ production (authentication related):
 https://stackoverflow.com/questions/46590155/firestore-permission-denied-missing-or-insufficient-permissions
 
-Todo list:
-- Make a like list: User view people that they have liked
-- Message system for matched people
+Game plan for chat:
+
+- build the front end for chat system
+- build the api for adding messages
+- connect front end to api 

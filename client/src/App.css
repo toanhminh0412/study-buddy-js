@@ -3,3 +3,8 @@
     font-family: 'Roboto', 'sans-serif';
     font-size: 300;
 }
+
+html, body {
+    height: 100%;
+    margin: 0px;
+}

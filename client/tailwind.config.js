@@ -9,6 +9,10 @@ module.exports = {
       },
       spacing: {
         '11/12': '91.6%',
+      }, 
+      height: {
+        '97vh': '97vh',
+        '98vh': '98vh',
       }
     },
   },
