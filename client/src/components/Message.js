@@ -38,6 +38,8 @@ export default function Message() {
     
     const sendMessage = e => {
         e.preventDefault();
+        if(message !== "") {
+        setMessage("");
         fetch('/api/message', {
             method: 'POST',
             headers: {
@@ -70,6 +72,7 @@ export default function Message() {
 
             setMessageList(messagesData);
         })
+        }
     }
 
     return (
@@ -87,7 +90,7 @@ export default function Message() {
                     }) }
                 </div>
                 <form className='w-full h-12 md:w-2/3 lg:w-1/2 absolute bottom-4 flex flex-row border-t border-b' onSubmit={sendMessage}>
-                    <input className='w-10/12 pl-4 text-lg' type='text' name='message' placeholder="Type a message" onChange={updateMessage}></input>
+                    <input className='w-10/12 pl-4 text-lg' type='text' name='message' placeholder="Type a message" value={message} onChange={updateMessage}></input>
                     <input className='w-2/12 text-center text-red-500 font-medium text-lg' type='submit' value='Send'></input>
                 </form>
             </div>
