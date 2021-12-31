@@ -1,4 +1,7 @@
 import React, {useState, useEffect} from "react";
+import {io} from "socket.io-client";
+
+let socket = io("http://127.0.0.1:8000");
 
 export default function Message() {
     const [message, setMessage] = useState("");
@@ -9,9 +12,14 @@ export default function Message() {
     const receiverId = window.localStorage.getItem('receiverId');
     const receiverName = window.localStorage.getItem('receiverName');
     const receiverPic = window.localStorage.getItem('receiverPic');
+
+    socket.on('chat message', (msg) => {
+        if (msg === receiverId) {
+            getMessages();
+        }
+    })
     
-    useEffect(() => {
-        console.log(messageList)
+    const getMessages = () => {
         fetch('/api/message')
         .then(response => response.json())
         .then(data => {
@@ -28,8 +36,19 @@ export default function Message() {
                 }
             })
 
-            setMessageList(messagesData);
+            if (messagesData.sort().join(',') !== messageList.sort().join(',')) {
+                setMessageList(messagesData);
+            }
+            
         })
+        .catch(error => {
+            console.log(error);
+        })
+    }
+    
+    useEffect(() => {
+        console.log(messageList)
+        getMessages();
     }, [])
 
     const updateMessage = e => {
@@ -37,6 +56,7 @@ export default function Message() {
     }
     
     const sendMessage = e => {
+        socket.emit('chat message', senderId);
         e.preventDefault();
         if(message !== "") {
         setMessage("");
