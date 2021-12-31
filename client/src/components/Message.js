@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from "react";
-import {io} from "socket.io-client";
-
-let socket = io("http://127.0.0.1:8000");
+import { collection, query, where, onSnapshot } from "firebase/firestore";
+import { db } from '../App';
 
 export default function Message() {
     const [message, setMessage] = useState("");
@@ -12,18 +11,11 @@ export default function Message() {
     const receiverId = window.localStorage.getItem('receiverId');
     const receiverName = window.localStorage.getItem('receiverName');
     const receiverPic = window.localStorage.getItem('receiverPic');
-
-    socket.on('chat message', (msg) => {
-        if (msg === receiverId) {
-            getMessages();
-        }
-    })
     
     const getMessages = () => {
         fetch('/api/message')
         .then(response => response.json())
         .then(data => {
-            console.log("All messages:", data.messages)
             let messagesData = [];
             data.messages.forEach(messageObj => {
                 if ((messageObj.senderId === senderId && messageObj.receiverId === receiverId) || (messageObj.senderId === receiverId && messageObj.receiverId === senderId)) {
@@ -45,18 +37,29 @@ export default function Message() {
             console.log(error);
         })
     }
+
+    const q = query(collection(db, 'chat server'), where("receiverId", "==", senderId), where("senderId", "==", receiverId));
+    const unsub = onSnapshot(q, (snapshot) => {
+        snapshot.docChanges().forEach((change) => {
+          if (change.type === "added") {
+            getMessages();
+          }       
+        });
+      });
+    
     
     useEffect(() => {
         console.log(messageList)
         getMessages();
+        unsub();
     }, [])
+    
 
     const updateMessage = e => {
         setMessage(e.target.value);
     }
     
     const sendMessage = e => {
-        socket.emit('chat message', senderId);
         e.preventDefault();
         if(message !== "") {
         setMessage("");

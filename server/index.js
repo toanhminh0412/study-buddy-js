@@ -6,27 +6,6 @@ const cors = require('cors');
 const PORT = process.env.PORT || 5000;
 
 const app = express();
-const http = require('http');
-const server = http.createServer(app);
-const { Server } = require("socket.io");
-const io = new Server(server, {
-    cors: {
-        origin: "*"
-    }
-});
-
-io.on('connection', (socket) => {
-    console.log('a user connected');
-    socket.on('chat message', (msg) => {
-        console.log("message: " + msg);
-        io.emit('chat message', msg);
-    })
-})
-
-server.listen(8000, () => {
-    console.log('Socket listening on localhost:8000');
-})
-
 
 // Allow CORS for the client
 app.use(
@@ -45,7 +24,6 @@ app.use(express.static(path.resolve(__dirname, '../client/build')));
 const firebase =  require("firebase/app");
 const firestore = require("firebase/firestore");
 const fireauth = require("firebase/auth");
-const { ActionCodeOperation } = require('firebase/auth');
 
 // Your web app's Firebase configuration
 const firebaseApp = firebase.initializeApp({
