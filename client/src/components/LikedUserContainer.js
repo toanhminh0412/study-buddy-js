@@ -30,7 +30,7 @@ export default function LikedUserContainer(props) {
     } else {
         if (!props.match) {
             return (
-                <div onClick={() => {navigate(`/likes/${props.userId}`)}} className='flex flex-row mb-8 mt-4 shadow-lg mx-auto sm:w-11/12 md:w-4/6 xl:w-1/2 cursor-pointer rounded-md'>
+                <div onClick={() => {navigate(`/likes/${props.userId}`)}} className='flex flex-row mb-8 mt-4 shadow-lg mx-auto sm:w-11/12 md:w-4/6 xl:w-1/2 cursor-pointer rounded-md hover:shadow-inner'>
                     <img className='w-52 h-52 md:w-60 md:h-72' src={user.profilePic} alt='profile-img'></img>
                     <div className='ml-4 mt-2 sm:mt-4 lg:ml-10 '>
                         <h1 className='text-2xl font-medium md:text-4xl'>{user.name}</h1>
