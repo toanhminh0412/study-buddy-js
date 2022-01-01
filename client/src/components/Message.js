@@ -5,6 +5,7 @@ import { db } from '../App';
 export default function Message() {
     const [message, setMessage] = useState("");
     const [messageList, setMessageList] = useState([])
+    const unchange = "";
     const senderId = window.localStorage.getItem('userId');
     const senderPic = window.localStorage.getItem('profilePic');
     const senderName = window.localStorage.getItem('name');
@@ -32,6 +33,8 @@ export default function Message() {
             if (messagesData.sort().join(',') !== messageList.sort().join(',')) {
                 setMessageList(messagesData);
             }
+
+            console.log(messageList);
             
         })
         .catch(error => {
@@ -40,20 +43,20 @@ export default function Message() {
     }
 
     const q = query(collection(db, 'chat server'), where("receiverId", "==", senderId), where("senderId", "==", receiverId));
-    const unsub = onSnapshot(q, (snapshot) => {
+    const unsub = () => {onSnapshot(q, (snapshot) => {
         snapshot.docChanges().forEach((change) => {
           if (change.type === "added") {
             getMessages();
           }       
         });
-      });
+      })};
     
     
     useEffect(() => {
         console.log(messageList)
         getMessages();
         unsub();
-    }, [])
+    }, [unchange]);
     
 
     const updateMessage = e => {
