@@ -10,17 +10,16 @@ import Dropdown from './Dropdown';
 import NotificationDropdown from "./NotificationDropdown";
 
 // import from firebase
-import { collection, query, where, onSnapshot, doc } from "firebase/firestore";
+import { onSnapshot, doc } from "firebase/firestore";
 import { db } from '../App';
 
 export default function Header() {
     const[dropdown, setDropdown] = useState(false);
     const [notificationList, setNotificationList] = useState([])
-    const[notificationDropdown, setNotificationDropdown] = useState(true);
+    const[notificationDropdown, setNotificationDropdown] = useState(false);
     const [notificationAlert, setNotificationAlert] = useState(false);
     let dropdownUI;
     let notificationDropdownUI;
-    let nameMessage = []
 
     const unchange = "";
     
@@ -32,6 +31,7 @@ export default function Header() {
             console.log(doc.data().notifications);
             setNotificationAlert(true);
             setNotificationList(doc.data().notifications.slice(doc.data().notifications.length-3, doc.data().notifications.length));
+        
         })
     }
 
@@ -48,12 +48,15 @@ export default function Header() {
         }
     }
 
-    let toggleNotificationDropdown = () => {
+    let toggleNotificationDropdown = (notiUp) => {
         if (notificationDropdown) {
             setNotificationDropdown(false);
         } else {
             setNotificationDropdown(true);
         }
+
+        setNotificationAlert(false);
+
     }
 
     if(dropdown) {
