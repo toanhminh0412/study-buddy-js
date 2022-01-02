@@ -27,11 +27,10 @@ export default function Header() {
     
     const notificationDetector = () => {
         onSnapshot(doc(db, "notifications", userId), (doc) => {
-            console.log('notification received')
-            console.log(doc.data().notifications);
+            // console.log('notification received')
+            // console.log(doc.data().notifications);
             setNotificationAlert(true);
             setNotificationList(doc.data().notifications.slice(doc.data().notifications.length-3, doc.data().notifications.length));
-        
         })
     }
 

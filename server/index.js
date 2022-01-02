@@ -234,34 +234,18 @@ app.post('/api/like', async (req, res) => {
         res.status(400).send({"message": "Fail to like the person. Try again"})
     }
 
-    const senderNotificationRef = firestore.doc(db, 'notifications', senderId);
-    const receiverNotificationRef = firestore.doc(db, 'notifications', receiverId);
-    const senderNotificationSnap = await firestore.getDoc(senderNotificationRef);
-    const receiverNotificationSnap = await firestore.getDoc(receiverNotificationRef);
-    let senderNotifications = [];
-    if(senderNotificationSnap.exists()) {
-        senderNotifications = senderNotificationSnap.data().notifications;
+    const notificationRef = firestore.doc(db, 'notifications', receiverId);
+    const notificationSnap = await firestore.getDoc(notificationRef);
+    let notifications = [];
+    if(notificationSnap.exists()) {
+        notifications = notificationSnap.data().notifications;
     }
-
-    if(senderNotifications.length >= 25) {
-        senderNotifications = senderNotifications.slice(senderNotifications.length-10, senderNotifications.length);
+    if(notifications.length >= 25) {
+        notifications = notifications.slice(notifications.length-10, notifications.length);
     }
-    senderNotifications.push('You just received a like. Check out who it is!!')
-
-    
-    let receiverNotifications = [];
-    if(receiverNotificationSnap.exists()) {
-        receiverNotifications = receiverNotificationSnap.data().notifications;
-    }
-
-    if(receiverNotifications.length >= 25) {
-        receiverNotifications = receiverNotifications.slice(receiverNotifications.length-10, receiverNotifications.length);
-    }
-    receiverNotifications.push('You just received a like. Check out who it is!!')
-
+    notifications.push("You just received a new like. Check out who it is!!")
     try {
-        await firestore.setDoc(firestore.doc(db, 'notifications', senderId), {'notifications': senderNotifications})
-        await firestore.setDoc(firestore.doc(db, 'notifications', receiverId), {'notifications': receiverNotifications})
+        await firestore.setDoc(firestore.doc(db, 'notifications', receiverId), {'notifications': notifications})
     } catch (error) {
         console.log(error);
     }
