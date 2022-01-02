@@ -233,6 +233,38 @@ app.post('/api/like', async (req, res) => {
     } catch (error) {
         res.status(400).send({"message": "Fail to like the person. Try again"})
     }
+
+    const senderNotificationRef = firestore.doc(db, 'notifications', senderId);
+    const receiverNotificationRef = firestore.doc(db, 'notifications', receiverId);
+    const senderNotificationSnap = await firestore.getDoc(senderNotificationRef);
+    const receiverNotificationSnap = await firestore.getDoc(receiverNotificationRef);
+    let senderNotifications = [];
+    if(senderNotificationSnap.exists()) {
+        senderNotifications = senderNotificationSnap.data().notifications;
+    }
+
+    if(senderNotifications.length >= 25) {
+        senderNotifications = senderNotifications.slice(senderNotifications.length-10, senderNotifications.length);
+    }
+    senderNotifications.push('You just received a like. Check out who it is!!')
+
+    
+    let receiverNotifications = [];
+    if(receiverNotificationSnap.exists()) {
+        receiverNotifications = receiverNotificationSnap.data().notifications;
+    }
+
+    if(receiverNotifications.length >= 25) {
+        receiverNotifications = receiverNotifications.slice(receiverNotifications.length-10, receiverNotifications.length);
+    }
+    receiverNotifications.push('You just received a like. Check out who it is!!')
+
+    try {
+        await firestore.setDoc(firestore.doc(db, 'notifications', senderId), {'notifications': senderNotifications})
+        await firestore.setDoc(firestore.doc(db, 'notifications', receiverId), {'notifications': receiverNotifications})
+    } catch (error) {
+        console.log(error);
+    }
 })
 
 // add a new like for a person
@@ -271,6 +303,38 @@ app.post('/api/match', async (req, res) => {
     } catch (error) {
         res.status(400).send({"message": "Fail to match the person for sender. Try again"})
     }
+
+    const senderNotificationRef = firestore.doc(db, 'notifications', senderId);
+    const receiverNotificationRef = firestore.doc(db, 'notifications', receiverId);
+    const senderNotificationSnap = await firestore.getDoc(senderNotificationRef);
+    const receiverNotificationSnap = await firestore.getDoc(receiverNotificationRef);
+    let senderNotifications = [];
+    if(senderNotificationSnap.exists()) {
+        senderNotifications = senderNotificationSnap.data().notifications;
+    }
+
+    if(senderNotifications.length >= 25) {
+        senderNotifications = senderNotifications.slice(senderNotifications.length-10, senderNotifications.length);
+    }
+    senderNotifications.push('You have a new match. Check out who it is!!')
+
+    
+    let receiverNotifications = [];
+    if(receiverNotificationSnap.exists()) {
+        receiverNotifications = receiverNotificationSnap.data().notifications;
+    }
+
+    if(receiverNotifications.length >= 25) {
+        receiverNotifications = receiverNotifications.slice(receiverNotifications.length-10, receiverNotifications.length);
+    }
+    receiverNotifications.push('You have a new match. Check out who it is!!')
+
+    try {
+        await firestore.setDoc(firestore.doc(db, 'notifications', senderId), {'notifications': senderNotifications})
+        await firestore.setDoc(firestore.doc(db, 'notifications', receiverId), {'notifications': receiverNotifications})
+    } catch (error) {
+        console.log(error);
+    }
 })
 
 // get all people that a person has liked
@@ -304,7 +368,8 @@ app.get('/api/message', async(req, res) => {
 // add user messages
 app.post('/api/message', async(req, res) => {
     
-
+    const senderId = req.body.senderId;
+    const receiverId = req.body.receiverId;
     const d = new Date();
     let msString = String(d.valueOf());
     let messageId = "msg" + msString;
@@ -341,6 +406,45 @@ app.post('/api/message', async(req, res) => {
     } catch (error) {
         res.status(404).send({"message": "No messages were found"})
     }
+
+    const notificationRef = firestore.doc(db, 'notifications', receiverId);
+    const notificationSnap = await firestore.getDoc(notificationRef);
+    let notifications = [];
+    if(notificationSnap.exists()) {
+        notifications = notificationSnap.data().notifications;
+    }
+    if(notifications.length >= 25) {
+        notifications = notifications.slice(notifications.length-10, notifications.length);
+    }
+    notifications.push(`You received a new message from ${req.body.senderName}. Check out what it is!!`)
+    try {
+        await firestore.setDoc(firestore.doc(db, 'notifications', receiverId), {'notifications': notifications})
+    } catch (error) {
+        console.log(error);
+    }
+})
+
+app.post('/api/notification/:id', async(req, res) => {
+    userId = req.params.id;
+    const newNotification = req.body.notification;
+    const notificationRef = firestore.doc(db, 'notifications', userId);
+    const notificationSnap = await firestore.getDoc(notificationRef);
+    let notifications = [];
+    if(notificationSnap.exists()) {
+        notifications = notificationSnap.data().notifications;
+    }
+    if(notifications.length >= 25) {
+        notifications = notifications.slice(notifications.length-10, notifications.length);
+    }
+    notifications.push(newNotification);
+    let retNotifications = notifications.length < 3 ? notifications: notifications.slice(notifications.length-3, notifications.length)
+    try {
+        await firestore.setDoc(firestore.doc(db, 'notifications', userId), {'notifications': notifications});
+        res.status(201).send({'recentNotifications': retNotifications})
+    } catch (error) {
+        res.status(400).send({'message': 'failed to add notification'});
+    }
+
 })
 
 app.listen(PORT, () => {

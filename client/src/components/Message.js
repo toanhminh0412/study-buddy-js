@@ -5,6 +5,7 @@ import { db } from '../App';
 export default function Message() {
     const [message, setMessage] = useState("");
     const [messageList, setMessageList] = useState([])
+    const [curMessage, setCurMessage] = useState(null);
     const unchange = "";
     const senderId = window.localStorage.getItem('userId');
     const senderPic = window.localStorage.getItem('profilePic');
@@ -35,6 +36,8 @@ export default function Message() {
             }
 
             console.log(messageList);
+            // curMessage.scrollIntoView({ behavior: "smooth"})
+            document.getElementById('dummy').scrollIntoView({behavior: 'smooth'})
             
         })
         .catch(error => {
@@ -56,6 +59,7 @@ export default function Message() {
         console.log(messageList)
         getMessages();
         unsub();
+        
     }, [unchange]);
     
 
@@ -99,6 +103,7 @@ export default function Message() {
             })
 
             setMessageList(messagesData);
+            document.getElementById('dummy').scrollIntoView({behavior: 'smooth'})
         })
         }
     }
@@ -111,6 +116,7 @@ export default function Message() {
                 <div className="h-[83%] overflow-y-scroll border-l border-r">
                     <img src={receiverPic} alt='receiverphoto' className='w-72 h-72 rounded-full mt-32 md:mt-48 mx-auto'></img>
                     <p className='text-2xl text-center mt-4 md:mt-8'>Say hi to <span className="font-medium">{receiverName}</span></p>
+                    <div id='dummy'></div>
                 </div>
                 <div className='absolute bottom-0 w-full md:w-2/3 lg:w-1/2 border'>
                     <form className='w-full h-12 flex flex-row border-t border-b' onSubmit={sendMessage}>
@@ -147,7 +153,7 @@ export default function Message() {
                             )
                         } else {
                             return (
-                                <div className='ml-auto mr-4 mt-2 w-fit flex flex-row xl:mt-4 xl:mr-6' key={messageObj.messageId}>
+                                <div className='ml-auto mr-4 mt-2 w-fit flex flex-row xl:mt-4 xl:mr-6 xl:mb-4' key={messageObj.messageId}>
                                 <div>
                                     <p className='font-light mext-md ml-auto w-fit mr-4'>{messageObj.senderName}</p>
                                     <div className='mr-4 border w-fit pl-2 pr-2 rounded-sm bg-slate-100'>
@@ -159,6 +165,7 @@ export default function Message() {
                             )
                         }
                     }) }
+                    <div id='dummy'></div>
                 </div>
                 <div className='absolute bottom-0 w-full md:w-2/3 lg:w-1/2 border'>
                     <form className='w-full h-12 flex flex-row border-t border-b' onSubmit={sendMessage}>
