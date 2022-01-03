@@ -22,17 +22,11 @@ export default function HomePage() {
         e.preventDefault();
         let users = []
         userList.forEach(user => {
-            console.log(user);
-            if((user.department === departmentPref && departmentPref !== "") || departmentPref === "") {
-                console.log('department went through')
+            if((user.department.replace(/ /g, "").toLowerCase().includes(departmentPref.replace(/ /g, "").toLowerCase()) && departmentPref !== "") || departmentPref === "") {
                 if((yearPref !== 0 && user.studyYear === yearPref) || yearPref === 0) {
-                    console.log('year went throught')
                     if((subjectPref !== '' && user.subjects.includes(subjectPref)) || subjectPref === "") {
-                        console.log('subject went through')
-                        if((stylePref !== 'any' && user.studyingStyle === stylePref) || stylePref === "any") {
-                            console.log('style went through')
+                        if((stylePref !== 'any' && user.studyingStyle.includes(stylePref)) || stylePref === "any") {
                             if ((locationPref !== '' && user.location === locationPref) || locationPref === "") {
-                                console.log('add user')
                                 users.push(user);
                             }
                         }
@@ -41,8 +35,6 @@ export default function HomePage() {
             }
         })
         setUserListPref(users);
-        console.log(users);
-        console.log(userListPref);
         setCurrentUser(0);
     }
 
@@ -88,30 +80,6 @@ export default function HomePage() {
         }).then(response => response.json())
         .then(data => {
             console.log(data)
-            fetch(`/api/like/${receiverId}`)
-            .then(response => response.json())
-            .then(receiverData => {
-                let receiverLikes = receiverData.liked_people;
-                if(receiverLikes.includes(senderId)) {
-                    fetch('/api/match', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            "senderId": senderId,
-                            "receiverId": receiverId
-                        })
-                    })
-                    .then(response => response.json())
-                    .then(resData => {
-                        console.log(resData)
-                    })
-                    .catch(resError => {
-                        console.log(resError);
-                    })
-                }
-            })
             setCurrentUser(currentUser+1);
         })
         .catch((error) => {
@@ -124,14 +92,12 @@ export default function HomePage() {
         fetch('/api/profiles')
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             setUserList(data);
             fetch(`/api/like/${userId}`)
             .then(response => response.json())
             .then(likeData => {
-                console.log(likeData);
                 setUserLikeList(likeData.liked_people);
-                window.localStorage.setItem('liked_people', JSON.stringify(likeData.liked_people))
+                // window.localStorage.setItem('liked_people', JSON.stringify(likeData.liked_people))
             })
             .catch((likeError) => {
                 console.log(likeError);
@@ -152,24 +118,7 @@ export default function HomePage() {
     if (user) {
         if (user.userId === userId || userLikeList.includes(user.userId)) {
             setCurrentUser(currentUser + 1);
-            // console.log('found your own profile')
         } 
-        /*
-        else {
-            let subjectsString = ""
-            for (let i=0; i < user.subjects.length; i++) {
-                console.log(user.subjects[i]);
-                if (i < user.subjects.length - 1) {
-                    console.log(user.subjects[i]);
-                    subjectsString = subjectsString + String(user.subjects[i]) + ', ';
-                    console.log(subjectsString)
-                } else {
-                    subjectsString = subjectsString + user.subjects[i]
-                }
-            }
-            user.subjects = subjectsString;
-        }
-        */
     }
 
     if (userId !== "") {
@@ -191,14 +140,14 @@ export default function HomePage() {
                             <label className='lg:text-xl' htmlFor='studyingStyle-pref'>Style</label>
                             <select className='mb-2 lg:mb-4 border border-slate-500 lg:h-8 lg:text-xl' name='studyingStyle-pref' onChange={updateStylePref} defaultValue='any'>
                                 <option value='any'>Any</option>
-                                <option value='Quite/Individual work'>Quite/Individual work</option>
+                                <option value='Quiet/Individual work'>Quiet/Individual work</option>
                                 <option value='Discussion/Group work'>Discussion/Group work</option>
                             </select>
                             <label className='lg:text-xl' type='location-pref'>Location</label>
                             <input className='mb-2 lg:mb-4 border border-slate-500 lg:h-8 lg:text-xl lg:p-2' type='text' name='location-pref' onChange={updateLocationPref}/>
                             <div className='w-fit ml-auto mt-2 flex flex-row'>
-                                <div className='w-20 bg-orange-500 rouded-sm text-white text-center mr-4' onClick={togglePreference}>Close</div>
-                                <input className='w-20 bg-red-500 rouded-sm text-white' type='submit' value='Apply'/>
+                                <div className='w-20 bg-orange-500 rouded-sm text-white text-center mr-4 hover:bg-orange-700 duration-200' onClick={togglePreference}>Close</div>
+                                <input className='w-20 bg-red-500 rouded-sm text-white hover:bg-red-700 duration-200' type='submit' value='Apply'/>
                             </div>
                         </form>
                     </div>)}
@@ -216,6 +165,32 @@ export default function HomePage() {
             } else {
                 return (
                     <div className='w-screen h-screen flex flex-col justify-center'>
+                        {!prefOpen ? 
+                    (<div className='absolute top-14 lg:top-20 left-2 lg:left-4 bg-white rounded-full w-12 h-12 flex flex-col justify-center hover:bg-slate-200 duration-200' onClick={togglePreference}>
+                        <IoIosSettings className='text-4xl mx-auto'/>
+                    </div>) :
+                    (<div className='lg:w-72 absolute top-12 left-0 lg:top-20 bg-white rounded-sm shadow-md'>
+                        <form className='flex flex-col p-2' onSubmit={showPref}>
+                            <label className='lg:text-xl' htmlFor='department-pref'>Department</label>
+                            <input className='mb-2 lg:mb-4 border border-slate-500 lg:h-8 lg:text-xl lg:p-2' type='text' name='department-pref' onChange={updateDepartmentPref}/>
+                            <label className='lg:text-xl' htmlFor='studyYear-pref'>Study year</label>
+                            <input className='mb-2 lg:mb-4 border border-slate-500 lg:h-8 lg:text-xl lg:p-2' type='number' name='studyYear-pref' onChange={updateYearPref}/>
+                            <label className='lg:text-xl' type='text' name='subject-pref'>Subject</label>
+                            <input className='mb-2 lg:mb-4 border border-slate-500 lg:h-8 lg:text-xl lg:p-2' type='text' name='subject-pref' onChange={updateSubjectPref}/>
+                            <label className='lg:text-xl' htmlFor='studyingStyle-pref'>Style</label>
+                            <select className='mb-2 lg:mb-4 border border-slate-500 lg:h-8 lg:text-xl' name='studyingStyle-pref' onChange={updateStylePref} defaultValue='any'>
+                                <option value='any'>Any</option>
+                                <option value='Quiet/Individual work'>Quiet/Individual work</option>
+                                <option value='Discussion/Group work'>Discussion/Group work</option>
+                            </select>
+                            <label className='lg:text-xl' type='location-pref'>Location</label>
+                            <input className='mb-2 lg:mb-4 border border-slate-500 lg:h-8 lg:text-xl lg:p-2' type='text' name='location-pref' onChange={updateLocationPref}/>
+                            <div className='w-fit ml-auto mt-2 flex flex-row'>
+                                <div className='w-20 bg-orange-500 rouded-sm text-white text-center mr-4 hover:bg-orange-700 duration-200' onClick={togglePreference}>Close</div>
+                                <input className='w-20 bg-red-500 rouded-sm text-white hover:bg-red-700 duration-200' type='submit' value='Apply'/>
+                            </div>
+                        </form>
+                    </div>)}
                         <h1 className="text-center text-6xl mb-20">No more available user</h1>
                     </div>
                 )

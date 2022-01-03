@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from "react";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { db } from '../App';
+import Login from "./Login";
 
 export default function Message() {
     const [message, setMessage] = useState("");
@@ -108,6 +109,9 @@ export default function Message() {
         }
     }
 
+    if (senderId === "") {
+        return <Login/>
+    }
     if (messageList.length === 0) {
         return (
             <div className='flex flex-row h-full w-full'>

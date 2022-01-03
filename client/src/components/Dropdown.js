@@ -18,6 +18,8 @@ export default function Dropdown() {
         window.localStorage.setItem('status', "")
         window.localStorage.setItem('availability', "")
         window.localStorage.setItem('location', "")
+        window.localStorage.setItem('editPic', "false")
+        window.localStorage.setItem('editDetails', "false")
 
         window.localStorage.setItem('liked_people', JSON.stringify([]))
 

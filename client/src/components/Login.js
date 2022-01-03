@@ -72,6 +72,8 @@ export default function Login() {
                         window.localStorage.setItem('status', userProfile.status)
                         window.localStorage.setItem('availability', userProfile.availability)
                         window.localStorage.setItem('location', userProfile.location)
+                        window.localStorage.setItem('editPic', "false");
+                        window.localStorage.setItem("editDetails", "false");
                     }
                     navigate('/')
                 })

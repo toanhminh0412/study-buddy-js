@@ -15,25 +15,50 @@ export default function UserProfilePic() {
             let picName = e.target.files[0].name + "-" + Date.now()
             setProfilePicName(picName)
         }
-        console.log(e.target.files[0]);
+        // console.log(e.target.files[0]);
     }
 
     const submitProfilePic = e => {
         e.preventDefault();
-        console.log(profilePic);
-        console.log(profilePicName);
-        let profilePicRef = ref(storage, `images/${profilePicName}`);
-        uploadBytes(profilePicRef, profilePic).then((snapshot) => {
-            console.log('Profile picture uploaded');
-            getDownloadURL(profilePicRef)
-            .then((url) => {
-                console.log(url);
-                window.localStorage.setItem('profilePic', url);
-                navigate('/user-profile');
+        // console.log(profilePic);
+        // console.log(profilePicName);
+        let editPic = window.localStorage.getItem('editPic');
+        if(editPic === "false") {
+            if (profilePic !== null && profilePicName !== "") {
+                let profilePicRef = ref(storage, `images/${profilePicName}`);
+                uploadBytes(profilePicRef, profilePic).then((snapshot) => {
+                console.log('Profile picture uploaded');
+                getDownloadURL(profilePicRef)
+                .then((url) => {
+                    console.log(url);
+                    window.localStorage.setItem('profilePic', url);
+                    navigate('/user-profile');
+                })
             })
-        })
-
-    }
+            } else {
+                window.localStorage.setItem('profilePic', 'https://firebasestorage.googleapis.com/v0/b/study-buddy-63dfc.appspot.com/o/images%2Fblank.jpg-1641196683053?alt=media&token=daa74371-1e91-4aab-9697-7eb39cd6810d');
+                navigate('/user-profile')
+            }
+        } else {
+            if (profilePic !== null && profilePicName !== "") {
+                let profilePicRef = ref(storage, `images/${profilePicName}`);
+                uploadBytes(profilePicRef, profilePic).then((snapshot) => {
+                console.log('Profile picture uploaded');
+                getDownloadURL(profilePicRef)
+                .then((url) => {
+                    console.log(url);
+                    window.localStorage.setItem('profilePic', url);
+                    window.localStorage.setItem('editPic', "false");
+                    window.localStorage.setItem('editDetails', "true");
+                    navigate('/user-profile');
+                })
+                })
+            } else {
+                window.localStorage.setItem('editPic', "false");
+                window.localStorage.setItem('editDetails', "true");
+                navigate('/user-profile');
+            }  
+    }}
     
     return (
         <div>

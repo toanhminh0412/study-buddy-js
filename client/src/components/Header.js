@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import {FiMenu} from "react-icons/fi";
 import {BsFillBellFill} from 'react-icons/bs';
 import {VscBellDot} from 'react-icons/vsc';
+import { useNavigate } from "react-router-dom";
 
 // import components
 import Dropdown from './Dropdown';
@@ -14,6 +15,8 @@ import { onSnapshot, doc } from "firebase/firestore";
 import { db } from '../App';
 
 export default function Header() {
+    const navigate = useNavigate();
+    const [userId, setUserId] = useState("");
     const[dropdown, setDropdown] = useState(false);
     const [notificationList, setNotificationList] = useState([])
     const[notificationDropdown, setNotificationDropdown] = useState(false);
@@ -23,7 +26,9 @@ export default function Header() {
 
     const unchange = "";
     
-    const userId = window.localStorage.getItem('userId');
+    if (window.localStorage.getItem('userId') !== "" && userId === "") {
+        setUserId(window.localStorage.getItem('userId'));
+    }  
     
     const notificationDetector = () => {
         onSnapshot(doc(db, "notifications", userId), (doc) => {
@@ -35,8 +40,10 @@ export default function Header() {
     }
 
     useEffect(() => {
-        notificationDetector();
-    }, [unchange]);
+        if (userId !== "") {
+            notificationDetector();
+        }
+    }, [userId]);
     
     
     let toggleDropdown = () => {
@@ -69,7 +76,7 @@ export default function Header() {
     return (
         <div>
             <nav className="flex flex-row bg-red-500 lg:h-16 h-12 shadow-xl shadow-red-200">
-                <h1 className="ml-2 sm:ml-8 my-auto text-xl lg:text-3xl sm:text-xl font-medium text-white">StudyBuddy</h1>
+                <h1 onClick={() => {navigate('/')}} className="ml-2 sm:ml-8 my-auto text-xl lg:text-3xl sm:text-xl font-medium text-white cursor-pointer">StudyBuddy</h1>
                 <div className="ml-2 my-auto w-7/12 text-center 2xl:ml-40 lg:ml-16 sm:ml-2">
                     <Link to='/user-profile' className='hidden sm:inline-block ml-2 2xl:ml-32 lg:ml-14 sm:ml-4 2xl:text-2xl lg:text-xl text-white hover:text-amber-400'>User Profile</Link>
                     <Link to='/' className='hidden sm:inline-block ml-2 2xl:ml-32 lg:ml-14 sm:ml-4 2xl:text-2xl lg:text-xl text-white hover:text-amber-400'>Scroll</Link>

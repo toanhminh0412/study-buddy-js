@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
 import { useParams } from "react-router-dom";
+import Login from "./Login";
 
 export default function LikedUserProfile() {
     const [user, setUser] = useState({})
@@ -17,6 +18,11 @@ export default function LikedUserProfile() {
     }, [])
 
     // console.log(user);
+
+    const currentUserId = window.localStorage.getItem('userId');
+    if (currentUserId === "") {
+        return (<Login/>)
+    }
 
     if (!user) {
         return (

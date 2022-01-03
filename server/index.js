@@ -228,10 +228,39 @@ app.post('/api/like', async (req, res) => {
         senderLikes.push(receiverId);
     }   
     try {
-        await firestore.setDoc(firestore.doc(db, 'likes', senderId), {'liked_people': senderLikes})
-        res.status(200).send({"message": "Add a liked person"})
+        await firestore.setDoc(firestore.doc(db, 'likes', senderId), {'user': senderId,'liked_people': senderLikes})
     } catch (error) {
         res.status(400).send({"message": "Fail to like the person. Try again"})
+    }
+
+    const receiverRef = firestore.doc(db, 'likes', receiverId);
+    const receiverSnap = await firestore.getDoc(receiverRef);
+    if (receiverSnap.exists()) {
+        if (receiverSnap.data().liked_people.includes(senderId)) {
+            const senderMatchRef = firestore.doc(db, 'matches', senderId);
+            const senderMatchSnap = await firestore.getDoc(senderMatchRef);
+            let senderMatches = [];
+            if (senderMatchSnap.exists()) {
+                senderMatches = senderMatchSnap.data().matched_people;
+            }
+            senderMatches.push(receiverId);
+
+            const receiverMatchRef = firestore.doc(db, 'matches', receiverId);
+            const receiverMatchSnap = await firestore.getDoc(receiverMatchRef);
+            let receiverMatches = [];
+            if (receiverMatchSnap.exists()) {
+                receiverMatches = receiverMatchSnap.data().matched_people;
+            }
+            receiverMatches.push(receiverId);
+            
+            try {
+                await firestore.setDoc(senderMatchRef, {'user': senderId, 'matched_people': senderMatches})
+                await firestore.setDoc(receiverMatchRef, {'user': receiverId, 'matched_people': receiverMatches})
+                console.log('Add a new match');
+            } catch (error) {
+                console.log(error);
+            }
+        }
     }
 
     const notificationRef = firestore.doc(db, 'notifications', receiverId);
@@ -249,79 +278,43 @@ app.post('/api/like', async (req, res) => {
     } catch (error) {
         console.log(error);
     }
+    res.status(200).send({"message": "Add a liked person"})
 })
 
-// add a new like for a person
-app.post('/api/match', async (req, res) => {
-    let senderId = req.body["senderId"];
-    let receiverId = req.body["receiverId"];
-    
-    // Update sender match database
-    const senderRef = firestore.doc(db, 'matches', senderId);
-    const senderSnap = await firestore.getDoc(senderRef);
-    let senderMatches = [];
-    if(senderSnap.exists()) {
-        console.log('Sender match database found')
-        senderMatches = senderSnap.data().matched_people;
+// unlike a person
+app.post('/api/unlike', async(req, res) => {
+    senderId = req.body.senderId;
+    receiverId = req.body.receiverId;
+    const senderLikesSnap = await firestore.getDoc(firestore.doc(db, 'likes', senderId));
+    const senderMatchesSnap = await firestore.getDoc(firestore.doc(db, 'matches', senderId));
+    let senderLikes = []
+    if (senderLikesSnap.exists()) {
+        senderLikes = senderLikesSnap.data().liked_people;
     }
-    if (!senderMatches.includes(receiverId)) {
-        senderMatches.push(receiverId);
+    senderLikes = senderLikes.filter(personId => personId !== receiverId);
+    let senderMatches = []
+    if (senderMatchesSnap.exists()) {
+        senderMatches = senderMatchesSnap.data().matched_people;
     }
+    senderMatches = senderMatches.filter(personId => personId !== receiverId);
 
-    // Update receiver match database
-    const receiverRef = firestore.doc(db, 'matches', receiverId);
-    const receiverSnap = await firestore.getDoc(receiverRef);
-    let receiverMatches = [];
-    if(receiverSnap.exists()) {
-        console.log('Receiver match database found')
-        receiverMatches = receiverSnap.data().matched_people;
+    const receiverMatchesSnap = await firestore.getDoc(firestore.doc(db, 'matches', receiverId));
+    let receiverMatches = []
+    if (receiverMatchesSnap.exists()) {
+        receiverMatches = receiverMatchesSnap.data().matched_people;
     }
-    if (!receiverMatches.includes(senderId)) {
-        receiverMatches.push(senderId);
-    }
-
+    receiverMatches = receiverMatches.filter(personId => personId !== senderId);
     try {
-        await firestore.setDoc(firestore.doc(db, 'matches', senderId), {'matched_people': senderMatches})
-        await firestore.setDoc(firestore.doc(db, 'matches', receiverId), {'matched_people': receiverMatches})
-        res.status(200).send({"message": "Add a matched person"})
-    } catch (error) {
-        res.status(400).send({"message": "Fail to match the person for sender. Try again"})
-    }
-
-    const senderNotificationRef = firestore.doc(db, 'notifications', senderId);
-    const receiverNotificationRef = firestore.doc(db, 'notifications', receiverId);
-    const senderNotificationSnap = await firestore.getDoc(senderNotificationRef);
-    const receiverNotificationSnap = await firestore.getDoc(receiverNotificationRef);
-    let senderNotifications = [];
-    if(senderNotificationSnap.exists()) {
-        senderNotifications = senderNotificationSnap.data().notifications;
-    }
-
-    if(senderNotifications.length >= 25) {
-        senderNotifications = senderNotifications.slice(senderNotifications.length-10, senderNotifications.length);
-    }
-    senderNotifications.push('You have a new match. Check out who it is!!')
-
-    
-    let receiverNotifications = [];
-    if(receiverNotificationSnap.exists()) {
-        receiverNotifications = receiverNotificationSnap.data().notifications;
-    }
-
-    if(receiverNotifications.length >= 25) {
-        receiverNotifications = receiverNotifications.slice(receiverNotifications.length-10, receiverNotifications.length);
-    }
-    receiverNotifications.push('You have a new match. Check out who it is!!')
-
-    try {
-        await firestore.setDoc(firestore.doc(db, 'notifications', senderId), {'notifications': senderNotifications})
-        await firestore.setDoc(firestore.doc(db, 'notifications', receiverId), {'notifications': receiverNotifications})
-    } catch (error) {
-        console.log(error);
+        await firestore.setDoc(firestore.doc(db, 'likes', senderId), {'user': senderId, 'liked_people': senderLikes})
+        await firestore.setDoc(firestore.doc(db, 'matches', senderId), {'user': senderId, 'matched_people': senderMatches})
+        await firestore.setDoc(firestore.doc(db, 'matches', receiverId), {'user': receiverId, 'matched_people': receiverMatches})
+        res.status(200).send({"message": "Unlike successfully"})
+    } catch(error) {
+        res.status(400).send({"message": "Failed to unlike. Please try again"})
     }
 })
 
-// get all people that a person has liked
+// get all people that a person has matched
 app.get('/api/match/:id', async(req, res) => {
     userId = req.params.id;
     const userMatchRef = firestore.doc(db, 'matches', userId);
@@ -406,29 +399,6 @@ app.post('/api/message', async(req, res) => {
     } catch (error) {
         console.log(error);
     }
-})
-
-app.post('/api/notification/:id', async(req, res) => {
-    userId = req.params.id;
-    const newNotification = req.body.notification;
-    const notificationRef = firestore.doc(db, 'notifications', userId);
-    const notificationSnap = await firestore.getDoc(notificationRef);
-    let notifications = [];
-    if(notificationSnap.exists()) {
-        notifications = notificationSnap.data().notifications;
-    }
-    if(notifications.length >= 25) {
-        notifications = notifications.slice(notifications.length-10, notifications.length);
-    }
-    notifications.push(newNotification);
-    let retNotifications = notifications.length < 3 ? notifications: notifications.slice(notifications.length-3, notifications.length)
-    try {
-        await firestore.setDoc(firestore.doc(db, 'notifications', userId), {'notifications': notifications});
-        res.status(201).send({'recentNotifications': retNotifications})
-    } catch (error) {
-        res.status(400).send({'message': 'failed to add notification'});
-    }
-
 })
 
 app.listen(PORT, () => {
