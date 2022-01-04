@@ -3,6 +3,7 @@ import LikedUserContainer from "./LikedUserContainer";
 import {collection, getDoc, getDocs, query, where, doc} from 'firebase/firestore';
 import {db} from '../App';
 import Login from "./Login";
+import HelpButton from "./HelpButton";
 
 export default function Likes() {
     const [userLikeList, setUserLikeList] = useState([])
@@ -23,7 +24,6 @@ export default function Likes() {
                 users.push(doc.data().user)
             }
         })
-        console.log(users);
         setUserLikeList(users);
     }
 
@@ -36,6 +36,7 @@ export default function Likes() {
     if(currentUserId !== "") {
         return (
             <div>
+                <HelpButton userLikes={true}/>
                 <h1 className="text-center mb-12 mt-12 text-6xl sm:text-8xl font-medium">Who like you</h1>
                 <div>
                     {userLikeList.map(userId => {

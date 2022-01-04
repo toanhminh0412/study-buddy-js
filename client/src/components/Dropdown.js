@@ -18,6 +18,9 @@ export default function Dropdown() {
         window.localStorage.setItem('status', "")
         window.localStorage.setItem('availability', "")
         window.localStorage.setItem('location', "")
+        window.localStorage.setItem('receiverName', "")
+        window.localStorage.setItem("receiverId", "");
+        window.localStorage.setItem('locationGeo', "")
         window.localStorage.setItem('editPic', "false")
         window.localStorage.setItem('editDetails', "false")
 
@@ -26,7 +29,6 @@ export default function Dropdown() {
         fetch('/api/logout/users')
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             navigate('/login')
         })
         .catch((error) => {

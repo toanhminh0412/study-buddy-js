@@ -36,7 +36,6 @@ export default function Message() {
                 setMessageList(messagesData);
             }
 
-            console.log(messageList);
             // curMessage.scrollIntoView({ behavior: "smooth"})
             document.getElementById('dummy').scrollIntoView({behavior: 'smooth'})
             
@@ -57,7 +56,6 @@ export default function Message() {
     
     
     useEffect(() => {
-        console.log(messageList)
         getMessages();
         unsub();
         
@@ -89,7 +87,6 @@ export default function Message() {
         })
         .then(response => response.json())
         .then(data => {
-            console.log("All messages:", data.messages)
             let messagesData = [];
             data.messages.forEach(messageObj => {
                 if ((messageObj.senderId === senderId && messageObj.receiverId === receiverId) || (messageObj.senderId === receiverId && messageObj.receiverId === senderId)) {

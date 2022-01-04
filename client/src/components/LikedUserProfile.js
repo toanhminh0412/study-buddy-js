@@ -17,7 +17,6 @@ export default function LikedUserProfile() {
         })
     }, [])
 
-    // console.log(user);
 
     const currentUserId = window.localStorage.getItem('userId');
     if (currentUserId === "") {

@@ -31,7 +31,6 @@ export default function LikedUserContainer(props) {
             })
         }).then(response => response.json())
         .then(data => {
-            console.log(data)
             setUser(null)
         })
         .catch((error) => {
@@ -53,7 +52,6 @@ export default function LikedUserContainer(props) {
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             setUser(null);
         })
         .catch(error => {

@@ -6,6 +6,8 @@ import UserProfilePic from "./UserProfilePic";
 import UserProfileDetails from "./UserProfileDetails";
 import {useNavigate} from 'react-router-dom';
 import { GrClose } from "react-icons/gr";
+import HelpButton from "./HelpButton";
+import WarningMessage from "./WarningMessage";
 
 
 export default function UserProfile() {
@@ -22,6 +24,8 @@ export default function UserProfile() {
     let [status, setStatus] = useState("Look for a long term study partner")
     let [availability, setAvailability] = useState("")
     let [location, setLocation] = useState("")
+    let [geocode, setGeocode] = useState(Array(2))
+    const [warning, setWarning] = useState(false);
     
     useEffect(() => {
         if (window.localStorage.getItem('name') !== "") {
@@ -40,9 +44,7 @@ export default function UserProfile() {
 
 
     let changeName = e => {
-        // console.log(e.target.value)
         setName(e.target.value)
-        // console.log(name)
     }
 
     let changeAge = e => {
@@ -62,29 +64,19 @@ export default function UserProfile() {
     }
 
     const addSubject = () => {
-        if (subject !== "") {
+        if (subject !== "" && !subjects.includes(subject)) {
             setSubjects([...subjects, subject]);
-            setSubject("")
+            
         }  
+        setSubject("")
     }
 
     const deleteSubject = (delSubject) => {
         setSubjects(subjects.filter(subject => subject !== delSubject))
     }
 
-    /*
-    let changeSubject1 = e => {
-        setSubjects([e.target.value, subjects[1]])
-    }
-
-    let changeSubject2 = e => {
-        setSubjects([subjects[0], e.target.value])
-    }
-    */
-
     let changeStudyingStyle = e => {
         setStudyingStyle([e.target.value])
-        // console.log(e.target.value)
     } 
 
     let changeDescription = e => {
@@ -102,8 +94,24 @@ export default function UserProfile() {
     let changeLocation = e => {
         setLocation(e.target.value)
     }
+
+    let getGeocode = (location) => {
+        fetch(`http://open.mapquestapi.com/geocoding/v1/address?key=i3z2K8kdJsLrG7chHm6rtuHx6G4IGv22&location=${location}`, {
+            mode: 'cors'
+        })
+        .then(response => response.json())
+        .then(data => {
+            geocode[0] = data.results[0].locations[0].latLng.lat;
+            geocode[1] = data.results[0].locations[0].latLng.lng;
+            setGeocode(geocode);
+        })
+        .catch(error => {
+            console.log(error);
+        })
+    }
     
-    let submitUserProfile = e => {
+    let submitUserProfile = async(e) => {
+        await getGeocode(location);
         let userProfile = {
             "userId": window.localStorage.getItem('userId'),
             "name": name,
@@ -116,9 +124,9 @@ export default function UserProfile() {
             "description": description,
             "status": status,
             "availability": availability,
-            "location": location
+            "location": location,
+            "locationGeo": geocode
         }
-        // console.log(userProfile);
         e.preventDefault();
         fetch('/api/profiles', {
             method: 'POST',
@@ -127,9 +135,12 @@ export default function UserProfile() {
               },
             body: JSON.stringify(userProfile),
         })
-        .then(response => response.json())
+        .then(response => {
+            if(response.status >= 400) {
+                setWarning(true)
+            }
+            return response.json()})
         .then(data => {
-            console.log('Success:', data);
             window.localStorage.setItem('name', name)
             window.localStorage.setItem('age', age)
             window.localStorage.setItem('studyYear', studyYear)
@@ -140,6 +151,7 @@ export default function UserProfile() {
             window.localStorage.setItem('status', status)
             window.localStorage.setItem('availability', availability)
             window.localStorage.setItem('location', location)
+            window.localStorage.setItem('locationGeo', geocode[0] + ',' + geocode[1]);
             window.localStorage.setItem('editPic', "false");
             window.localStorage.setItem('editDetails', "false");
             navigate('/user-profile')
@@ -164,7 +176,7 @@ export default function UserProfile() {
             const userStudyYear = window.localStorage.getItem('studyYear');
             const userDepartment = window.localStorage.getItem('department')
             const userStatus = window.localStorage.getItem('status');
-            const userSubjects = window.localStorage.getItem('subjects')
+            const userSubjects = window.localStorage.getItem('subjects').split(',')
             const userStudyingStyle = window.localStorage.getItem('studyingStyle')
             const userDescription = window.localStorage.getItem('description')
             const userAvailability = window.localStorage.getItem('availability')
@@ -186,7 +198,9 @@ export default function UserProfile() {
             if (editDetails === "true") {
                 return (
                 <div>
+                    <HelpButton userForm={true}/>
                     <h1 className='font-medium text-5xl mt-8 sm:ml-4 lg:ml-12'>Build User Profile</h1>
+                    {warning ? <WarningMessage/> : <div></div>}
                     <form onSubmit={submitUserProfile} className='profile-form mt-4 flex flex-col'>
                         <label className='text-2xl font-light ml-8 lg:ml-20' htmlFor='name'>Name</label>
                         <input className='ml-8 lg:ml-20 border border-black w-72 sm:w-96 h-8 lg:h-12 rounded-sm text-xl pl-6' type="text" name="name" value={name} onChange={changeName}/>
@@ -248,7 +262,9 @@ export default function UserProfile() {
         } else {
         return (
             <div>
+                <HelpButton userForm={true}/>
                 <h1 className='font-medium text-5xl mt-8 sm:ml-4 lg:ml-12'>Build User Profile</h1>
+                {warning ? <WarningMessage/> : <div></div>}
                 <form onSubmit={submitUserProfile} className='profile-form mt-4 flex flex-col'>
                     <label className='text-2xl font-light ml-8 lg:ml-20' htmlFor='name'>Name</label>
                     <input className='ml-8 lg:ml-20 border border-black w-72 sm:w-96 h-8 lg:h-12 rounded-sm text-xl pl-6' type="text" name="name" onChange={changeName}/>

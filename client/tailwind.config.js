@@ -5,7 +5,8 @@ module.exports = {
   theme: {
     extend: {
       inset: {
-        '76': '19rem'
+        '76': '19rem',
+        '23rem': '23rem',
       },
       spacing: {
         '11/12': '91.6%',

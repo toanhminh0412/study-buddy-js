@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from "react";
+import HelpButton from "./HelpButton";
 import LikedUserContainer from "./LikedUserContainer";
 import Login from "./Login";
 
@@ -10,7 +11,6 @@ export default function Matches() {
         fetch(`/api/match/${userId}`)
         .then(response => response.json())
         .then(data => {
-            console.log(data.matched_people);
             setUserMatchList(data.matched_people)
         })
         .catch(error => {
@@ -21,6 +21,7 @@ export default function Matches() {
     if(userId !== "") {
         return (
             <div>
+                <HelpButton userMatches={true}/>
                 <h1 className="text-center mb-12 mt-12 text-6xl sm:text-8xl font-medium">Your matches</h1>
                 <div>
                     {userMatchList.map(userId => {

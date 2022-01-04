@@ -11,7 +11,7 @@ import Dropdown from './Dropdown';
 import NotificationDropdown from "./NotificationDropdown";
 
 // import from firebase
-import { onSnapshot, doc } from "firebase/firestore";
+import { onSnapshot, doc, getDoc } from "firebase/firestore";
 import { db } from '../App';
 
 export default function Header() {
@@ -30,13 +30,14 @@ export default function Header() {
         setUserId(window.localStorage.getItem('userId'));
     }  
     
-    const notificationDetector = () => {
-        onSnapshot(doc(db, "notifications", userId), (doc) => {
-            // console.log('notification received')
-            // console.log(doc.data().notifications);
-            setNotificationAlert(true);
-            setNotificationList(doc.data().notifications.slice(doc.data().notifications.length-3, doc.data().notifications.length));
-        })
+    const notificationDetector = async () => {
+        const docSnap = await getDoc(doc(db, "notifications", userId));
+        if (docSnap.exists()) {
+            onSnapshot(doc(db, "notifications", userId), (doc) => {
+                setNotificationAlert(true);
+                setNotificationList(doc.data().notifications.slice(doc.data().notifications.length-3, doc.data().notifications.length));
+            })
+        }
     }
 
     useEffect(() => {
@@ -75,7 +76,7 @@ export default function Header() {
 
     return (
         <div>
-            <nav className="flex flex-row bg-red-500 lg:h-16 h-12 shadow-xl shadow-red-200">
+            <nav className="flex flex-row bg-gradient-to-r from-red-500 to-orange-500 lg:h-16 h-12 shadow-xl shadow-red-200">
                 <h1 onClick={() => {navigate('/')}} className="ml-2 sm:ml-8 my-auto text-xl lg:text-3xl sm:text-xl font-medium text-white cursor-pointer">StudyBuddy</h1>
                 <div className="ml-2 my-auto w-7/12 text-center 2xl:ml-40 lg:ml-16 sm:ml-2">
                     <Link to='/user-profile' className='hidden sm:inline-block ml-2 2xl:ml-32 lg:ml-14 sm:ml-4 2xl:text-2xl lg:text-xl text-white hover:text-amber-400'>User Profile</Link>
@@ -85,7 +86,7 @@ export default function Header() {
                 </div>
                 
                 <div className='w-fit ml-auto my-auto mr-8 relative'>
-                    {(notificationAlert && userId)  ? <VscBellDot className="text-red-900 text-2xl md:mr-0 lg:mr-4 lg:text-4xl font-medium hover:text-amber-300" onClick={toggleNotificationDropdown}/>
+                    {(notificationAlert && userId)  ? <VscBellDot className="text-white text-2xl md:mr-0 lg:mr-4 lg:text-4xl font-medium hover:text-amber-300" onClick={toggleNotificationDropdown}/>
                                         : <BsFillBellFill className="text-white text-2xl md:mr-0 lg:mr-4 lg:text-4xl font-medium hover:text-amber-300" onClick={toggleNotificationDropdown}/>}
                 </div>
 

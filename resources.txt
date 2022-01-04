@@ -2,14 +2,7 @@ For development/ production (authentication related):
 https://stackoverflow.com/questions/46590155/firestore-permission-denied-missing-or-insufficient-permissions
 
 Todo list:
-- display subjects properly
-- add location designation functionality
-- add login with google functioanlity
 - add forgot password functionality
-- upgrade preferences
-- upgrade user interface
-- add app instruction (optional)
 - add photo minimization functionality
-- match animation
-- can add multiple studying style
-- fix bugs
+- add a calendar functionality for availability
+- clean up code

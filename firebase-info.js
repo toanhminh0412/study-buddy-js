@@ -6,4 +6,6 @@ const firebaseConfig = {
     messagingSenderId: "507104695623",
     appId: "1:507104695623:web:d45fec11754265c0816862"
   };
-  
+
+
+const MapQuestAPIKEY = "i3z2K8kdJsLrG7chHm6rtuHx6G4IGv22"

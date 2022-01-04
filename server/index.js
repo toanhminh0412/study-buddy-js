@@ -43,18 +43,13 @@ app.post('/api/signup/users', async(req, res) => {
     const auth = fireauth.getAuth();
     email = req.body.email;
     password = req.body.password;
-    // console.log(email, password);
     fireauth.createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
         // Signed in
-        // console.log(userCredential)
         const uid = userCredential.user.uid;
         res.status(200).send({"userId": uid})
     })
     .catch((error) => {
-        console.log(error)
-        // const errorCode = error.code;
-        // const errorMessage = error.message
         res.status(400).send({"message": "Bad request. Please try again"});
     })
 })
@@ -66,7 +61,6 @@ app.post('/api/login/users', async(req, res) => {
     password = req.body.password;
     fireauth.signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
-        // console.log(userCredential)
         // Signed in
         const uid = userCredential.user.uid;
         res.status(200).send({"userId": uid})
@@ -109,10 +103,8 @@ app.get('/api/profiles/:id', async function(req, res) {
     const userProfileRef = firestore.doc(db, "profiles", userId);
     const userProfileSnap = await firestore.getDoc(userProfileRef)
     if(userProfileSnap.exists()) {
-        console.log('Success getting user profile')
         res.status(200).send({"userProfile": userProfileSnap.data()})
     } else {
-        console.log("Error: Could not find user profile")
         res.status(404).send({"message": "Didn't find a profile related to this user"})
     }
 })
@@ -182,7 +174,8 @@ app.post('/api/profiles', async (req, res) => {
         "description": description,
         "status": status,
         "availability": availability,
-        "location": location
+        "location": location,
+        "locationGeo": req.body.locationGeo
     };
 
 
@@ -205,7 +198,6 @@ app.get('/api/like/:id', async(req, res) => {
     const userLikeRef = firestore.doc(db, 'likes', userId);
     const userLikeSnap = await firestore.getDoc(userLikeRef);
     if(userLikeSnap.exists()) {
-        console.log('User like database found')
         let likes = userLikeSnap.data().liked_people;
         res.status(200).send({'liked_people': likes})
     } else {
@@ -221,7 +213,6 @@ app.post('/api/like', async (req, res) => {
     const senderSnap = await firestore.getDoc(senderRef);
     let senderLikes = [];
     if(senderSnap.exists()) {
-        console.log('Like database found')
         senderLikes = senderSnap.data().liked_people;
     }
     if(!senderLikes.includes(receiverId)) {
@@ -256,7 +247,26 @@ app.post('/api/like', async (req, res) => {
             try {
                 await firestore.setDoc(senderMatchRef, {'user': senderId, 'matched_people': senderMatches})
                 await firestore.setDoc(receiverMatchRef, {'user': receiverId, 'matched_people': receiverMatches})
-                console.log('Add a new match');
+            } catch (error) {
+                console.log(error);
+            }
+
+            const senderNotificationSnap = await firestore.getDoc(firestore.doc(db, 'notifications', senderId));
+            const receiverNotificationSnap = await firestore.getDoc(firestore.doc(db, 'notifications', receiverId));
+
+            let senderNotifications = [];
+            let receiverNotifications = [];
+            if (senderNotificationSnap.exists()) {
+                senderNotifications = senderNotificationSnap.data().notifications;
+            }
+            senderNotifications.push("You have a new match. Check out who it is");
+            if (receiverNotificationSnap.exists()) {
+                receiverNotifications = receiverNotificationSnap.data().notifications;
+            }
+            receiverNotifications.push("You have a new match. Check out who it is");
+            try {
+                await firestore.setDoc(firestore.doc(db, 'notifications', senderId), {'notifications': senderNotifications})
+                await firestore.setDoc(firestore.doc(db, 'notifications', receiverId), {'notifications': receiverNotifications})
             } catch (error) {
                 console.log(error);
             }
@@ -278,6 +288,7 @@ app.post('/api/like', async (req, res) => {
     } catch (error) {
         console.log(error);
     }
+
     res.status(200).send({"message": "Add a liked person"})
 })
 
@@ -320,7 +331,6 @@ app.get('/api/match/:id', async(req, res) => {
     const userMatchRef = firestore.doc(db, 'matches', userId);
     const userMatchSnap = await firestore.getDoc(userMatchRef);
     if(userMatchSnap.exists()) {
-        console.log('User match database found')
         let matches = userMatchSnap.data().matched_people;
         res.status(200).send({'matched_people': matches})
     } else {
@@ -362,8 +372,6 @@ app.post('/api/message', async(req, res) => {
         "message": req.body.message,
         "sendTime": Date.now()
     }
-
-    console.log(messageObject)
 
     try {
         await firestore.setDoc(firestore.doc(db, "chat server", messageId), messageObject);
