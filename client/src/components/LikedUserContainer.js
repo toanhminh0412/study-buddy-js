@@ -73,16 +73,30 @@ export default function LikedUserContainer(props) {
     if (!user) {
         return (<div></div>)
     } else {
+        let subjectsString = "";
+        if(user.subjects) {
+            let index = 0;
+            user.subjects.forEach(subject => {
+            if (index !== user.subjects.length - 1) {
+                subjectsString = subjectsString + subject + ', ';
+            } else {
+                subjectsString = subjectsString + subject;
+            }
+            index++;
+            })
+        }
+          
         if (!props.match) {
             return (
-                <div className='flex flex-row mb-8 mt-4 shadow-lg mx-auto sm:w-11/12 md:w-4/6 xl:w-1/2 cursor-pointer rounded-md relative'>
-                    <img onClick={() => {navigate(`/likes/${props.userId}`)}} className='w-52 h-52 md:w-60 md:h-72' src={user.profilePic} alt='profile-img'></img>
-                    <div className='ml-4 mt-2 sm:mt-4 lg:ml-10 '>
-                        <h1 onClick={() => {navigate(`/likes/${props.userId}`)}} className='text-2xl font-medium md:text-4xl hover:text-red-600'>{user.name}</h1>
-                        <p className='text-lg md:text-xl md:mt-4'>{user.department}, year {user.studyYear}</p>
-                        <p className='text-lg md:text-xl md:mt-2'>Subjects: {user.subjects}</p>
-                        <p className='text-lg md:text-xl md:mt-2'>Availability: {user.availability}</p>
-                        <p className='text-lg md:text-xl md:mt-2'>Located at {user.location}</p>
+                <div className='h-72 flex flex-row mb-8 mt-4 shadow-lg mx-auto sm:w-11/12 md:w-4/6 xl:w-1/2 rounded-md relative'>
+                    <img className='w-52 h-full md:w-60 lg:w-64' src={user.profilePic} alt='profile-img'></img>
+                    <div className='ml-4 mt-2 sm:mt-4 lg:ml-10'>
+                        <h1 onClick={() => {navigate(`/likes/${props.userId}`)}} className='text-2xl font-medium md:text-4xl hover:text-red-600 cursor-pointer'>{user.name}</h1>
+                        <p className='text-lg lg:text-xl lg:mt-4'>{user.department}, year {user.studyYear}</p>
+                        <p className='text-lg lg:text-xl lg:mt-2'>Subjects: {subjectsString}</p>
+                        <p className='text-lg lg:text-xl lg:mt-2'>Availability: {user.availability}</p>
+                        <p className='text-lg lg:text-xl lg:mt-2'>Located at {user.location}</p>
+                        <div className='h-20'></div>
                         <div onClick={() => {addLike(currentUserId, props.userId)}} className='ml-52 mt-2 md:mt-4 bg-green-500 hover:bg-green-700 rounded-full w-12 h-12 flex flex-col justify-center absolute right-3 bottom-3 lg:right-6 lg:bottom-4'>
                             <AiTwotoneLike className='text-3xl text-green-200 ml-2'/>
                         </div>
@@ -91,14 +105,15 @@ export default function LikedUserContainer(props) {
             )
         } else {
             return (
-                <div className='flex flex-row mb-8 mt-4 shadow-lg mx-auto sm:w-11/12 md:w-4/6 xl:w-1/2 rounded-md relative'>
-                    <img className='w-52 h-52 md:w-60 md:h-72' src={user.profilePic} alt='profile-img'></img>
+                <div className='h-72 flex flex-row mb-8 mt-4 shadow-lg mx-auto sm:w-11/12 md:w-4/6 xl:w-1/2 rounded-md relative'>
+                    <img className='w-52 h-full md:w-60 lg:w-64' src={user.profilePic} alt='profile-img'></img>
                     <div className='ml-4 mt-2 sm:mt-4 lg:ml-10 '>
                         <h1 onClick={() => {navigate(`/likes/${props.userId}`)}} className='text-2xl font-medium md:text-4xl hover:text-red-600 cursor-pointer'>{user.name}</h1>
-                        <p className='text-lg md:text-xl md:mt-4'>{user.department}, year {user.studyYear}</p>
-                        <p className='text-lg md:text-xl md:mt-2'>Subjects: {user.subjects}</p>
-                        <p className='text-lg md:text-xl md:mt-2'>Availability: {user.availability}</p>
-                        <p className='text-lg md:text-xl md:mt-2'>Located at {user.location}</p>
+                        <p className='text-lg lg:text-xl lg:mt-4'>{user.department}, year {user.studyYear}</p>
+                        <p className='text-lg lg:text-xl lg:mt-2'>Subjects: {subjectsString}</p>
+                        <p className='text-lg lg:text-xl lg:mt-2'>Availability: {user.availability}</p>
+                        <p className='text-lg lg:text-xl lg:mt-2'>Located at {user.location}</p>
+                        <div className='h-20'></div>
                         <div className='ml-52 mt-2 md:mt-4 absolute right-3 bottom-3 lg:right-6 lg:bottom-4 flex flex-row'>
                             <div className="bg-red-500 hover:bg-red-900 rounded-full w-12 h-12 flex flex-col justify-center mr-3">
                                 <GrClose onClick={() => unLike(currentUserId, props.userId)} className="text-3xl text-white ml-2"/>

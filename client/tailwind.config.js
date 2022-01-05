@@ -6,6 +6,7 @@ module.exports = {
     extend: {
       inset: {
         '76': '19rem',
+        '22rem': '22rem',
         '23rem': '23rem',
       },
       spacing: {

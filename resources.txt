@@ -2,7 +2,5 @@ For development/ production (authentication related):
 https://stackoverflow.com/questions/46590155/firestore-permission-denied-missing-or-insufficient-permissions
 
 Todo list:
-- add forgot password functionality
 - add photo minimization functionality
-- add a calendar functionality for availability
-- clean up code
+- fix chat UI

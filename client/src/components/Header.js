@@ -11,38 +11,48 @@ import Dropdown from './Dropdown';
 import NotificationDropdown from "./NotificationDropdown";
 
 // import from firebase
-import { onSnapshot, doc, getDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { db } from '../App';
 
 export default function Header() {
     const navigate = useNavigate();
-    const [userId, setUserId] = useState("");
     const[dropdown, setDropdown] = useState(false);
     const [notificationList, setNotificationList] = useState([])
     const[notificationDropdown, setNotificationDropdown] = useState(false);
     const [notificationAlert, setNotificationAlert] = useState(false);
+    const [value, setValue] = useState(0);
     let dropdownUI;
     let notificationDropdownUI;
+    
+    const userId = window.localStorage.getItem('userId');
 
-    const unchange = "";
-    
-    if (window.localStorage.getItem('userId') !== "" && userId === "") {
-        setUserId(window.localStorage.getItem('userId'));
-    }  
-    
-    const notificationDetector = async () => {
-        const docSnap = await getDoc(doc(db, "notifications", userId));
-        if (docSnap.exists()) {
-            onSnapshot(doc(db, "notifications", userId), (doc) => {
+    const forceUpdate = () => {
+        console.log('force update');
+        setValue(value+1);
+    }
+
+    const getNotification = async () => {
+        const notificationDocSnap = await getDoc(doc(db, "notifications", userId));
+        if (notificationDocSnap.exists()) {
+            if(notificationDocSnap.data().notifications.length > 0) {
                 setNotificationAlert(true);
-                setNotificationList(doc.data().notifications.slice(doc.data().notifications.length-3, doc.data().notifications.length));
-            })
+                if (notificationDocSnap.data().notifications.length < 3) {
+                    setNotificationList(notificationDocSnap.data().notifications);
+                } else {
+                    setNotificationList(notificationDocSnap.data().notifications.slice(notificationDocSnap.data().notifications.length-3, notificationDocSnap.data().notifications.length));
+                }
+            }
         }
     }
 
     useEffect(() => {
         if (userId !== "") {
-            notificationDetector();
+            getNotification();
+        }
+
+        if (userId === "") {
+            console.log('empty notification list')
+            setNotificationList([]);
         }
     }, [userId]);
     
@@ -67,11 +77,11 @@ export default function Header() {
     }
 
     if(dropdown) {
-        dropdownUI = <Dropdown/>;
+        dropdownUI = <Dropdown closeFunction={() => {setDropdown(false)}} headerRerenderFunction={forceUpdate}/>;
     }
 
     if(notificationDropdown) {
-        notificationDropdownUI = <NotificationDropdown notifications={notificationList}/>
+        notificationDropdownUI = <NotificationDropdown notifications={notificationList} closeFunction={() => {setNotificationDropdown(false)}}/>
     }
 
     return (

@@ -14,7 +14,7 @@ export default function HelpButton(props) {
         }
         if (props.userDetails) {
             return (
-                <div onClick={() => {setInstruction(true)}} className='absolute top-[23rem] right-96 sm:top-28 md:top-36 sm:right-8 md:right-16 lg:right-32 border border-green-700 hover:border-green-900 rounded-md w-16 h-8 text-center flex flex-col justify-center cursor-pointer'>
+                <div onClick={() => {setInstruction(true)}} className='absolute top-[22rem] right-100 sm:top-28 md:top-36 lg:top-64 xl:top-36 sm:right-8 md:right-16 lg:right-16 xl:right-32 border border-green-700 hover:border-green-900 rounded-md w-16 h-8 text-center flex flex-col justify-center cursor-pointer'>
                     <p className='text-lg text-green-700 hover:text-green-900'>Help</p>
                 </div>
             )

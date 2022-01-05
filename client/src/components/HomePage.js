@@ -165,7 +165,7 @@ export default function HomePage() {
                     (<div className='absolute top-14 lg:top-20 left-2 lg:left-4 bg-white rounded-full w-12 h-12 flex flex-col justify-center hover:bg-slate-200 duration-200 z-10' onClick={togglePreference}>
                         <IoIosSettings className='text-4xl mx-auto'/>
                     </div>) :
-                    (<div className='lg:w-72 absolute top-12 left-0 lg:top-20 bg-white rounded-sm shadow-md'>
+                    (<div className='lg:w-72 absolute top-12 left-0 lg:top-20 bg-white rounded-sm shadow-md z-10'>
                         <form className='flex flex-col p-2' onSubmit={showPref}>
                             <label className='lg:text-xl' htmlFor='department-pref'>Department</label>
                             <input className='mb-2 lg:mb-4 border border-slate-500 lg:h-8 lg:text-xl lg:p-2' type='text' name='department-pref' onChange={updateDepartmentPref}/>

@@ -182,8 +182,8 @@ app.post('/api/profiles', async (req, res) => {
     // Add a new user profile to the database
     try {
         await firestore.setDoc(firestore.doc(db, "profiles", profile_id), add_profile)
-        await firestore.setDoc(firestore.doc(db, "likes", profile_id), {'liked_people': []})
-        await firestore.setDoc(firestore.doc(db, "matches", profile_id), {'matched_people': []})
+        await firestore.setDoc(firestore.doc(db, "likes", profile_id), {'user': profile_id, 'liked_people': []})
+        await firestore.setDoc(firestore.doc(db, "matches", profile_id), {'user': profile_id, 'matched_people': []})
         res.status(201).send({"message": 'Profile posted'});
     } catch (error) {
         res.status(400).send({"message": 'Bad request. Please try again'});
@@ -242,7 +242,7 @@ app.post('/api/like', async (req, res) => {
             if (receiverMatchSnap.exists()) {
                 receiverMatches = receiverMatchSnap.data().matched_people;
             }
-            receiverMatches.push(receiverId);
+            receiverMatches.push(senderId);
             
             try {
                 await firestore.setDoc(senderMatchRef, {'user': senderId, 'matched_people': senderMatches})

@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import { useNavigate } from "react-router-dom";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import HomePage from './HomePage';
 
 export default function Login() {
     const navigate = useNavigate()
@@ -138,6 +139,11 @@ export default function Login() {
             console.log('Error:', error);
             // setNotification(true)
         })
+    }
+
+    const userId = window.localStorage.getItem('userId')
+    if (userId) {
+        return (<HomePage/>);
     }
     
     return (

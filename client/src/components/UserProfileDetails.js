@@ -58,7 +58,7 @@ export default function UserProfileDetails(props) {
                     <AiFillEdit onClick={editProfile} className='text-black text-5xl font-medium ml-2 mt-1'/>
                     </div>
                 ):
-                (<div className='absolute flex flex-row top-76 right-4 sm:top-auto sm:right-16 sm:mt-12 lg:right-24 lg:mt-24 xl:right-36'>
+                (<div className='absolute flex flex-row top-72 right-4 sm:top-auto sm:right-16 sm:mt-12 lg:right-24 lg:mt-24 xl:right-36'>
                 <div onClick={props.likeFunction} className='w-16 h-16 bg-green-500 rounded-full hover:bg-green-700 duration-200'>
                     <AiTwotoneLike className='text-green-100 text-5xl font-medium ml-2 mt-1'/>
                 </div>
