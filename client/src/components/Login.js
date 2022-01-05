@@ -158,10 +158,10 @@ export default function Login() {
             <p>Do not have an account? Sign up <span onClick={() => {navigate('/signup')}}className='cursor-pointer font-medium'>Here</span></p>
             <p className='mt-2'>Forgot password? Click <span className='font-medium'>here</span> to reset your password</p>
             <div onClick={loginWithGoogle} className="mt-8 mx-auto bg-blue-600 hover:bg-blue-800 w-72 sm:w-96 h-10 lg:h-16 rounded-sm pl-2 flex flex-row cursor-pointer">
-                <div className='ml-6 my-auto w-12 h-12 bg-white'>
-                    <img className="w-12 h-12" src="img/google-logo.png" alt="Google logo"></img>
+                <div className='ml-3 sm:ml-6 my-auto w-10 h-10 md:w-12 md:h-12 bg-white'>
+                    <img className="w-10 h-10 sm:w-12 sm:h-12" src="img/google-logo.png" alt="Google logo"></img>
                 </div>
-                <p className='text-white text-2xl font-medium my-auto ml-6'>Continue with Google</p>
+                <p className='text-white text-lg sm:text-2xl font-medium my-auto ml-4 sm:ml-6'>Continue with Google</p>
             </div>
         </div>
     )
