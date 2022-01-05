@@ -16,6 +16,7 @@ module.exports = {
         '90vh': '90vh',
         '97vh': '97vh',
         '98vh': '98vh',
+        '75%': '75%',
         '83%': '83%'
       },
       boxShadow: {

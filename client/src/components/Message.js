@@ -138,7 +138,7 @@ export default function Message() {
         <div className='flex flex-row h-full w-full'>
             <div className='w-0 h-full md:w-1/3 lg:w-1/4'></div>
             <div className='h-full w-full md:w-2/3 lg:w-1/2 flex flex-col'>
-                <div className="h-4/5 overflow-y-scroll border-l border-r">
+                <div className="h-[75%] overflow-y-scroll border-l border-r">
                     {messageList.map(messageObj => {
                         if (messageObj.senderId === senderId) {
                             return (
