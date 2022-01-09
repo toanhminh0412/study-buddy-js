@@ -117,7 +117,8 @@ export default function HomePage() {
     }
     
     useEffect(() => {
-        fetch('/api/profiles')
+        if (userId) {
+            fetch('/api/profiles')
         .then(response => response.json())
         .then(data => {
             setUserList(data);
@@ -132,16 +133,18 @@ export default function HomePage() {
         })
         .catch(error => {
             console.log("Error: ", error);
-    })}, [likeTimes])
+    })
+        }    
+    }, [likeTimes])
 
-    let user;
-    if (pref) {
-        user = userListPref[currentUser];
-    } else {
-        user = userList[currentUser];
-    }
-    
-    
+    let user = null;
+    if (userId !== "") {
+        if (pref) {
+            user = userListPref[currentUser];
+        } else {
+            user = userList[currentUser];
+        }
+    } 
 
     if (user) {
         if (user.userId === userId || userLikeList.includes(user.userId)) {

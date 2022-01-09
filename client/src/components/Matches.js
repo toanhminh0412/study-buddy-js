@@ -8,7 +8,8 @@ export default function Matches() {
     const [userMatchList, setUserMatchList] = useState([]);
 
     useEffect(() => {
-        fetch(`/api/match/${userId}`)
+        if (userId !== "") {
+            fetch(`/api/match/${userId}`)
         .then(response => response.json())
         .then(data => {
             setUserMatchList(data.matched_people)
@@ -16,6 +17,7 @@ export default function Matches() {
         .catch(error => {
             console.log(error);
         })
+        }
     }, [])
 
     if(userId !== "") {

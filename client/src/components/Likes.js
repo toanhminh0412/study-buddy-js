@@ -7,6 +7,7 @@ import HelpButton from "./HelpButton";
 
 export default function Likes() {
     const [userLikeList, setUserLikeList] = useState([])
+    const currentuserId = window.localStorage.getItem("userId");
     
     const getLikeList = async () => {
         const matchSnapshot = await getDoc(doc(db, "matches", window.localStorage.getItem('userId')));
@@ -28,12 +29,12 @@ export default function Likes() {
     }
 
     useEffect (() => {
-        getLikeList();
+        if(currentuserId !== "") {
+            getLikeList();
+        }
     }, [])
 
-    const currentUserId = window.localStorage.getItem('userId');
-
-    if(currentUserId !== "") {
+    if(currentuserId !== "") {
         return (
             <div>
                 <HelpButton userLikes={true}/>
