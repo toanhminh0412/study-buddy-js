@@ -20,7 +20,7 @@ export default function Matches() {
         }
     }, [])
 
-    if(userId !== "" || userId === null) {
+    if(userId !== "" || userId !== null) {
         return (
             <div>
                 <HelpButton userMatches={true}/>

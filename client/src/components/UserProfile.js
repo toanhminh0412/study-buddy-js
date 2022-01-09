@@ -166,7 +166,7 @@ export default function UserProfile() {
     let editPic = window.localStorage.getItem('editPic');
     let editDetails = window.localStorage.getItem('editDetails');
 
-    if (userId !== "" || userId === null) {
+    if (userId !== "" || userId !== null) {
         if(userName){
             if(editPic === "true") {
                 return(<UserProfilePic />)

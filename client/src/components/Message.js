@@ -106,7 +106,7 @@ export default function Message() {
         }
     }
 
-    if (senderId === "" || senderId === null) {
+    if (senderId === "" || senderId !== null) {
         return <Login/>
     }
     if (messageList.length === 0) {

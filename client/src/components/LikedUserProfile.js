@@ -19,7 +19,7 @@ export default function LikedUserProfile() {
 
 
     const currentUserId = window.localStorage.getItem('userId');
-    if (currentUserId === "" || currentUserId === null) {
+    if (currentUserId === "" || currentUserId !== null) {
         return (<Login/>)
     }
 
