@@ -8,7 +8,7 @@ export default function Matches() {
     const [userMatchList, setUserMatchList] = useState([]);
 
     useEffect(() => {
-        if (userId !== "") {
+        if (userId) {
             fetch(`/api/match/${userId}`)
         .then(response => response.json())
         .then(data => {
@@ -20,7 +20,7 @@ export default function Matches() {
         }
     }, [])
 
-    if(userId !== "" || userId !== null) {
+    if(userId !== "" && userId !== null) {
         return (
             <div>
                 <HelpButton userMatches={true}/>

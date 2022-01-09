@@ -46,11 +46,11 @@ export default function Header() {
     }
 
     useEffect(() => {
-        if (userId !== "") {
+        if (userId !== "" && userId !== null) {
             getNotification();
         }
 
-        if (userId === "") {
+        if (userId === "" && userId !== null) {
             console.log('empty notification list')
             setNotificationList([]);
         }

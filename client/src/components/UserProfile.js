@@ -28,7 +28,7 @@ export default function UserProfile() {
     const [warning, setWarning] = useState(false);
     
     useEffect(() => {
-        if (window.localStorage.getItem('name') !== "") {
+        if (window.localStorage.getItem('name') !== "" && window.localStorage.getItem('name') !== null) {
             setName(window.localStorage.getItem('name'));
             setAge(parseInt(window.localStorage.getItem('age')));
             setStudyYear(parseInt(window.localStorage.getItem('studyYear')))
@@ -166,7 +166,11 @@ export default function UserProfile() {
     let editPic = window.localStorage.getItem('editPic');
     let editDetails = window.localStorage.getItem('editDetails');
 
-    if (userId !== "" || userId !== null) {
+    if (userId === "" || userId === null) {
+        return <Login/>
+    }
+
+    if (userId !== "" && userId !== null) {
         if(userName){
             if(editPic === "true") {
                 return(<UserProfilePic />)

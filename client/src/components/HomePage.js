@@ -138,7 +138,7 @@ export default function HomePage() {
     }, [likeTimes])
 
     let user = null;
-    if (userId !== "") {
+    if (userId) {
         if (pref) {
             user = userListPref[currentUser];
         } else {
@@ -152,7 +152,7 @@ export default function HomePage() {
         } 
     }
 
-    if (userId !== "" || userId !== null) {
+    if (userId !== "" && userId !== null) {
         let userName = window.localStorage.getItem('name');
         if (userName === "") {
             return (

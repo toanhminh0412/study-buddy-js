@@ -29,12 +29,12 @@ export default function Likes() {
     }
 
     useEffect (() => {
-        if(currentuserId !== "") {
+        if(currentuserId) {
             getLikeList();
         }
     }, [])
 
-    if(currentuserId !== "" || currentuserId !== null) {
+    if(currentuserId !== "" && currentuserId !== null) {
         return (
             <div>
                 <HelpButton userLikes={true}/>
