@@ -34,7 +34,7 @@ export default function Likes() {
         }
     }, [])
 
-    if(currentuserId !== "") {
+    if(currentuserId !== "" || currentuserId === null) {
         return (
             <div>
                 <HelpButton userLikes={true}/>

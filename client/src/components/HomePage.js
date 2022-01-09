@@ -152,7 +152,7 @@ export default function HomePage() {
         } 
     }
 
-    if (userId !== "") {
+    if (userId !== "" || userId === null) {
         let userName = window.localStorage.getItem('name');
         if (userName === "") {
             return (
